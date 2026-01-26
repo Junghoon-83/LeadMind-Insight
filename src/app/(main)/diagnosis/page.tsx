@@ -24,6 +24,11 @@ export default function DiagnosisPage() {
     nickname,
   } = useAssessmentStore();
 
+  // 페이지 로드 시 스크롤 맨 위로
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // 문항 데이터 로드
   useEffect(() => {
     async function fetchQuestions() {
