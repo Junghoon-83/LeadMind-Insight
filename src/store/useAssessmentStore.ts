@@ -1,6 +1,18 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import type { AssessmentScores, JobRole } from '@/types';
+
+// SSR-safe storage
+const getStorage = () => {
+  if (typeof window === 'undefined') {
+    return {
+      getItem: () => null,
+      setItem: () => {},
+      removeItem: () => {},
+    };
+  }
+  return localStorage;
+};
 
 interface TeamMemberInput {
   id: string;
@@ -152,6 +164,7 @@ export const useAssessmentStore = create<AssessmentState>()(
     }),
     {
       name: 'leadmind-assessment',
+      storage: createJSONStorage(() => getStorage()),
       partialize: (state) => ({
         nickname: state.nickname,
         currentQuestionIndex: state.currentQuestionIndex,
@@ -166,8 +179,14 @@ export const useAssessmentStore = create<AssessmentState>()(
         teamMembers: state.teamMembers,
         assessmentId: state.assessmentId,
       }),
-      onRehydrateStorage: () => (state) => {
-        state?.setHasHydrated(true);
+      onRehydrateStorage: () => (state, error) => {
+        if (error) {
+          console.error('Hydration error:', error);
+          return;
+        }
+        if (state) {
+          state.setHasHydrated(true);
+        }
       },
     }
   )
