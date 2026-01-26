@@ -114,6 +114,10 @@ export default function DiagnosisPage() {
 
   const handleScoreSelect = (score: number) => {
     if (!currentQuestion) return;
+
+    // 이미 선택된 점수를 다시 누르면 아무 동작 안 함
+    if (currentAnswer === score) return;
+
     setAnswer(currentQuestion.id, score);
 
     // 자동으로 다음 문항으로 이동 (마지막 문항이 아닌 경우)
