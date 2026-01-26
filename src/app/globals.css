@@ -104,8 +104,8 @@ body {
 
 /* Scale Button (1-6 Rating) */
 .scale-btn {
-  width: 56px;
-  height: 56px;
+  width: 48px;
+  height: 48px;
   border-radius: 12px;
   border: 2px solid var(--color-violet-200);
   background: var(--color-white);
