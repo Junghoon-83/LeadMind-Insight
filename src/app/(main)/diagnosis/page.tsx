@@ -170,8 +170,8 @@ export default function DiagnosisPage() {
         <Header title="리더십 진단" showBack onBack={handleBack} />
       </div>
 
-      {/* Question Area - 상단 고정 높이 */}
-      <div className="h-[280px] px-6 pt-6 overflow-y-auto">
+      {/* Question Area */}
+      <div className="flex-1 px-6 pt-6 pb-24 overflow-y-auto">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentQuestion.id}
@@ -198,8 +198,8 @@ export default function DiagnosisPage() {
         </AnimatePresence>
       </div>
 
-      {/* Scale Buttons - 절대 고정 위치 */}
-      <div className="shrink-0 px-6 py-8">
+      {/* Scale Buttons - 화면 2/3 지점에 고정 */}
+      <div className="absolute left-0 right-0 top-[60%] px-6">
         <div className="flex justify-center gap-3">
           {[1, 2, 3, 4, 5, 6].map((score) => (
             <div key={score} className="flex flex-col items-center gap-2">
@@ -225,9 +225,6 @@ export default function DiagnosisPage() {
           ))}
         </div>
       </div>
-
-      {/* 빈 공간 */}
-      <div className="flex-1"></div>
 
       {/* Progress Bar - 하단 고정 */}
       <div className="shrink-0 bg-white px-6 py-3 border-t border-[var(--color-violet-100)]">
