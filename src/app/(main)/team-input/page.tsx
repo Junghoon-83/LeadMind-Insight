@@ -7,6 +7,7 @@ import { Plus, X, ChevronDown, ChevronUp } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import { Button, Card, Input } from '@/components/ui';
 import { useAssessmentStore } from '@/store/useAssessmentStore';
+import { saveAssessment } from '@/lib/saveAssessment';
 import type { FollowershipTypeInfo } from '@/types';
 
 export default function TeamInputPage() {
@@ -66,7 +67,12 @@ export default function TeamInputPage() {
     router.replace('/result');
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
+    // 팀원 입력 완료 시 저장
+    await saveAssessment({
+      status: 'team',
+      teamMembers: teamMembers.map((m) => ({ name: m.name, type: m.type })),
+    });
     router.push('/team-loading');
   };
 

@@ -7,6 +7,7 @@ import { ChevronRight, ChevronDown, Check } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import { Button, Input } from '@/components/ui';
 import { useAssessmentStore } from '@/store/useAssessmentStore';
+import { saveAssessment } from '@/lib/saveAssessment';
 import type { JobRole } from '@/types';
 
 const jobRoles: JobRole[] = ['마케팅', '기획', '경영지원', '개발', '디자인', '기타'];
@@ -92,8 +93,19 @@ function Dropdown({
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { nickname, setProfile, company, department, jobRole, email, agreedToTerms } =
-    useAssessmentStore();
+  const {
+    nickname,
+    setProfile,
+    company,
+    department,
+    jobRole,
+    email,
+    agreedToTerms,
+    answers,
+    scores,
+    leadershipType,
+    selectedConcerns,
+  } = useAssessmentStore();
 
   const [formData, setFormData] = useState({
     company: company,
@@ -158,7 +170,23 @@ export default function ProfilePage() {
       agreedToTerms: formData.agreedToTerms,
     });
 
-    // TODO: DB에 User 생성 및 Assessment 결과 저장
+    // 프로필 완료 시 전체 데이터 저장
+    await saveAssessment({
+      status: 'profile',
+      nickname,
+      company: formData.company,
+      department: formData.department,
+      jobRole: formData.jobRole,
+      email: formData.email,
+      agreedToTerms: formData.agreedToTerms,
+      answers,
+      scoreGrowth: scores?.growth,
+      scoreSharing: scores?.sharing,
+      scoreInteraction: scores?.interaction,
+      leadershipType: leadershipType || undefined,
+      concerns: selectedConcerns,
+    });
+
     router.push('/result');
   };
 

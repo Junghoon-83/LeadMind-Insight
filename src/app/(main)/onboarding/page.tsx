@@ -8,6 +8,7 @@ import { ChevronRight, ImageIcon, RotateCcw, Play, Eye } from 'lucide-react';
 import { Button, Input } from '@/components/ui';
 import { onboardingSlides } from '@/data/onboarding';
 import { useAssessmentStore } from '@/store/useAssessmentStore';
+import { saveAssessment } from '@/lib/saveAssessment';
 
 type Step = 'carousel' | 'nickname' | 'intro';
 type PreviousDataType = 'completed' | 'in-progress' | null;
@@ -76,7 +77,12 @@ export default function OnboardingPage() {
     }
   };
 
-  const handleStart = () => {
+  const handleStart = async () => {
+    // 온보딩 완료 시 저장
+    await saveAssessment({
+      status: 'onboarding',
+      nickname: nickname,
+    });
     router.push('/diagnosis');
   };
 

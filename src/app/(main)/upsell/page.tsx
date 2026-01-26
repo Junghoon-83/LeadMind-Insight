@@ -7,6 +7,7 @@ import { Check, MessageCircle, Send } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import { Button, Card } from '@/components/ui';
 import { useAssessmentStore } from '@/store/useAssessmentStore';
+import { saveAssessment } from '@/lib/saveAssessment';
 import type { ServiceType } from '@/types';
 
 interface ServiceOption {
@@ -56,8 +57,12 @@ export default function UpsellPage() {
   };
 
   const handleApply = async () => {
-    // TODO: DB에 서비스 신청 저장 또는 관리자 이메일 발송
-    console.log('신청된 서비스:', selectedServices);
+    // 서비스 선택 저장
+    await saveAssessment({
+      status: 'completed',
+      selectedServices,
+    });
+
     alert('서비스 신청이 완료되었습니다. 담당자가 곧 연락드리겠습니다.');
   };
 
