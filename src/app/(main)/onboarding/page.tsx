@@ -77,9 +77,11 @@ export default function OnboardingPage() {
   };
 
   const handleStart = () => {
-    // 스크롤 맨 위로 초기화 후 페이지 이동
+    // 스크롤 초기화 후 페이지 이동 (강제 새로고침 방식)
     window.scrollTo(0, 0);
-    router.push('/diagnosis');
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    window.location.href = '/diagnosis';
   };
 
   return (
