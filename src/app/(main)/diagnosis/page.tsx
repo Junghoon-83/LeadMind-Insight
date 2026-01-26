@@ -170,8 +170,8 @@ export default function DiagnosisPage() {
         <Header title="리더십 진단" showBack onBack={handleBack} />
       </div>
 
-      {/* Question Area - 상단 영역 */}
-      <div className="flex-1 flex flex-col justify-center px-6">
+      {/* Question Area - 상단 */}
+      <div className="shrink-0 px-6 pt-6">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentQuestion.id}
@@ -198,8 +198,8 @@ export default function DiagnosisPage() {
         </AnimatePresence>
       </div>
 
-      {/* Scale Buttons - 중앙 고정 */}
-      <div className="shrink-0 px-6 py-6">
+      {/* Scale Buttons - 중앙 배치 */}
+      <div className="flex-1 flex items-center justify-center px-6">
         <div className="flex justify-center gap-3">
           {[1, 2, 3, 4, 5, 6].map((score) => (
             <div key={score} className="flex flex-col items-center gap-2">
