@@ -30,22 +30,52 @@ model User {
   @@map("users")
 }
 
-// 진단 결과
+// 진단 결과 (이탈 추적 포함)
 model Assessment {
   id               String       @id @default(uuid())
-  userId           String       @map("user_id")
-  answers          Json         // Record<number, number>
-  scoreGrowth      Float        @map("score_growth")
-  scoreSharing     Float        @map("score_sharing")
-  scoreInteraction Float        @map("score_interaction")
-  leadershipType   String       @map("leadership_type") @db.VarChar(10)
-  selectedConcerns Json         @map("selected_concerns") // string[]
-  createdAt        DateTime     @default(now()) @map("created_at")
 
-  user             User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // 진행 상태 추적
+  status           String       @default("onboarding") @db.VarChar(20) // onboarding, diagnosis, concerns, profile, team, service, completed
+  lastQuestionIndex Int?        @map("last_question_index") // 진단 중단 시 마지막 문항
+
+  // 사용자 정보 (이탈 시에도 저장 가능하도록 optional)
+  nickname         String?      @db.VarChar(50)
+  company          String?      @db.VarChar(100)
+  department       String?      @db.VarChar(100)
+  jobRole          String?      @map("job_role") @db.VarChar(50)
+  email            String?      @db.VarChar(255)
+  agreedToTerms    Boolean      @default(false) @map("agreed_to_terms")
+
+  // 진단 결과
+  answers          Json?        // Record<number, number>
+  scoreGrowth      Float?       @map("score_growth")
+  scoreSharing     Float?       @map("score_sharing")
+  scoreInteraction Float?       @map("score_interaction")
+  leadershipType   String?      @map("leadership_type") @db.VarChar(10)
+  selectedConcerns Json?        @map("selected_concerns") // string[]
+
+  // 팀원 정보 (JSON으로 저장)
+  teamMembersData  Json?        @map("team_members_data") // [{name, type}]
+
+  // 케어 서비스 선택
+  selectedServices Json?        @map("selected_services") // string[]
+
+  // 유입 경로
+  utmSource        String?      @map("utm_source") @db.VarChar(100)
+  utmMedium        String?      @map("utm_medium") @db.VarChar(100)
+  utmCampaign      String?      @map("utm_campaign") @db.VarChar(100)
+
+  // 시간 정보
+  createdAt        DateTime     @default(now()) @map("created_at")
+  updatedAt        DateTime     @updatedAt @map("updated_at")
+
+  // 기존 관계 (optional로 변경)
+  userId           String?      @map("user_id")
+  user             User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
   teamMembers      TeamMember[]
 
-  @@index([userId])
+  @@index([status])
+  @@index([email])
   @@index([createdAt])
   @@index([leadershipType])
   @@map("assessments")
