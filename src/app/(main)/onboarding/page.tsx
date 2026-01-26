@@ -217,14 +217,15 @@ export default function OnboardingPage() {
           </motion.div>
         )}
 
-        {/* Intro Step */}
+        {/* Intro Step - 100dvh로 화면에 맞춤 (스크롤 방지) */}
+        {/* 원복: h-[100dvh] overflow-hidden → flex-1, pt-8 pb-6 → pt-16 pb-10 */}
         {step === 'intro' && (
           <motion.div
             key="intro"
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -50 }}
-            className="flex-1 flex flex-col px-6 pt-16 pb-10"
+            className="h-[100dvh] overflow-hidden flex flex-col px-6 pt-8 pb-6"
           >
             <div className="flex-1 flex flex-col justify-center">
               <motion.div
@@ -233,21 +234,21 @@ export default function OnboardingPage() {
                 transition={{ delay: 0.2 }}
                 className="text-center"
               >
-                <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-[var(--color-violet-100)] to-[var(--color-violet-200)] flex items-center justify-center shadow-md">
-                  <span className="text-4xl">👋</span>
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-[var(--color-violet-100)] to-[var(--color-violet-200)] flex items-center justify-center shadow-md">
+                  <span className="text-3xl">👋</span>
                 </div>
 
-                <h2 className="text-2xl font-bold text-[var(--color-text)] mb-1">
+                <h2 className="text-xl font-bold text-[var(--color-text)] mb-1">
                   <span className="text-[var(--color-primary)]">{nickname}</span>님, 반가워요.
                 </h2>
 
-                <p className="text-[var(--color-gray-600)] mt-4 leading-relaxed">
+                <p className="text-[var(--color-gray-600)] mt-3 leading-relaxed text-sm">
                   변화의 시대, 새로운 리더십을 위한<br />
                   발걸음을 시작해볼까요?
                 </p>
 
-                <div className="mt-8 p-5 rounded-2xl bg-[var(--color-violet-50)] border border-[var(--color-violet-100)]">
-                  <div className="flex items-center justify-between mb-3">
+                <div className="mt-5 p-4 rounded-2xl bg-[var(--color-violet-50)] border border-[var(--color-violet-100)]">
+                  <div className="flex items-center justify-between mb-2">
                     <span className="text-sm text-[var(--color-gray-600)]">예상 소요 시간</span>
                     <span className="font-semibold text-[var(--color-primary)]">약 5분</span>
                   </div>
@@ -257,7 +258,7 @@ export default function OnboardingPage() {
                   </div>
                 </div>
 
-                <p className="text-sm text-[var(--color-gray-400)] mt-6 leading-relaxed">
+                <p className="text-xs text-[var(--color-gray-400)] mt-4 leading-relaxed">
                   솔직하게 답변해 주실수록<br />
                   더 정확한 진단 결과를 받으실 수 있습니다.
                 </p>
@@ -267,7 +268,7 @@ export default function OnboardingPage() {
             <Link
               href="/diagnosis"
               scroll={true}
-              className="w-full h-[52px] rounded-xl bg-[var(--color-action)] text-white font-semibold flex items-center justify-center shadow-[var(--shadow-button)]"
+              className="w-full h-[52px] rounded-xl bg-[var(--color-action)] text-white font-semibold flex items-center justify-center shadow-[var(--shadow-button)] flex-shrink-0"
             >
               진단 시작하기
             </Link>
