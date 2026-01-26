@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, ImageIcon, RotateCcw, Play, Eye } from 'lucide-react';
 import { Button, Input } from '@/components/ui';
@@ -263,9 +264,13 @@ export default function OnboardingPage() {
               </motion.div>
             </div>
 
-            <Button fullWidth onClick={handleStart}>
+            <Link
+              href="/diagnosis"
+              scroll={true}
+              className="w-full h-[52px] rounded-xl bg-[var(--color-action)] text-white font-semibold flex items-center justify-center shadow-[var(--shadow-button)]"
+            >
               진단 시작하기
-            </Button>
+            </Link>
           </motion.div>
         )}
       </AnimatePresence>
