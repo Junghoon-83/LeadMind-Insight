@@ -3,32 +3,23 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { Loader2 } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import { Button } from '@/components/ui';
-import { CATEGORY_NAMES, type ConcernCategory, type ConcernItem } from '@/data/concerns';
+import { concerns as staticConcerns, CATEGORY_NAMES, type ConcernCategory } from '@/data/concerns';
 import { useAssessmentStore } from '@/store/useAssessmentStore';
+import { saveAssessment, getDiagnosisDuration, getKoreanTime } from '@/lib/saveAssessment';
 
 export default function ConcernsPage() {
   const router = useRouter();
   const { nickname, selectedConcerns, toggleConcern } = useAssessmentStore();
-  const [concerns, setConcerns] = useState<ConcernItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const concerns = staticConcerns;
+  const [isNavigating, setIsNavigating] = useState(false);
 
-  // 고민 데이터 로드
+  // 다음 페이지 프리페치
   useEffect(() => {
-    async function fetchConcerns() {
-      try {
-        const res = await fetch('/api/concerns');
-        const data = await res.json();
-        setConcerns(data.concerns || []);
-      } catch (error) {
-        console.error('Failed to fetch concerns:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchConcerns();
-  }, []);
+    router.prefetch('/loading');
+  }, [router]);
 
   useEffect(() => {
     if (!nickname) {
@@ -41,6 +32,19 @@ export default function ConcernsPage() {
   };
 
   const handleNext = () => {
+    if (isNavigating) return;
+    setIsNavigating(true);
+
+    // 백그라운드에서 저장 (비동기, fire-and-forget)
+    const diagnosisTime = getDiagnosisDuration();
+    saveAssessment({
+      status: 'concerns',
+      concerns: selectedConcerns,
+      diagnosisEndedAt: getKoreanTime(),
+      ...diagnosisTime,
+    });
+
+    // 즉시 화면 전환
     router.push('/loading');
   };
 
@@ -64,17 +68,6 @@ export default function ConcernsPage() {
 
     return groups;
   }, [concerns]);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="text-center">
-          <div className="w-8 h-8 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-[var(--color-gray-500)]">데이터를 불러오는 중...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
@@ -148,9 +141,16 @@ export default function ConcernsPage() {
           <Button
             fullWidth
             onClick={handleNext}
-            disabled={selectedConcerns.length === 0}
+            disabled={selectedConcerns.length === 0 || isNavigating}
           >
-            다음
+            {isNavigating ? (
+              <>
+                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                분석 준비 중...
+              </>
+            ) : (
+              '다음'
+            )}
           </Button>
           <p className="text-center text-sm text-[var(--color-gray-400)] mt-3">
             {selectedConcerns.length}개 선택됨

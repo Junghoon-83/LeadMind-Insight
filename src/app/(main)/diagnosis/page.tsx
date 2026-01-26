@@ -1,18 +1,18 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from '@/components/layout/Header';
 import { ProgressBar, Card } from '@/components/ui';
 import { useAssessmentStore } from '@/store/useAssessmentStore';
-import type { Question } from '@/types';
+import { saveAssessment, setDiagnosisStartTime } from '@/lib/saveAssessment';
+import { questions as staticQuestions } from '@/data/questions';
 
 export default function DiagnosisPage() {
   const router = useRouter();
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [totalQuestions, setTotalQuestions] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const questions = staticQuestions;
+  const totalQuestions = staticQuestions.length;
 
   const {
     currentQuestionIndex,
@@ -24,27 +24,63 @@ export default function DiagnosisPage() {
     nickname,
   } = useAssessmentStore();
 
-  // 페이지 로드 시 스크롤 맨 위로
-  useEffect(() => {
-    window.scrollTo(0, 0);
+  // 마지막 저장한 인덱스 추적 (중복 저장 방지)
+  const lastSavedIndex = useRef<number>(-1);
+
+  // 현재 진행 상황 저장 함수
+  const saveProgress = useCallback(async (questionIndex: number) => {
+    // 이미 저장한 인덱스면 스킵
+    if (lastSavedIndex.current === questionIndex) return;
+    lastSavedIndex.current = questionIndex;
+
+    await saveAssessment({
+      status: 'diagnosis',
+      lastQuestionIndex: questionIndex + 1, // 1-indexed (Q1=1, Q23=23)
+      answers: useAssessmentStore.getState().answers,
+    });
   }, []);
 
-  // 문항 데이터 로드
+  // 페이지 로드 시 스크롤 맨 위로 + 진단 시작 저장 + 프리페치
   useEffect(() => {
-    async function fetchQuestions() {
-      try {
-        const res = await fetch('/api/questions');
-        const data = await res.json();
-        setQuestions(data.questions || []);
-        setTotalQuestions(data.total || 0);
-      } catch (error) {
-        console.error('Failed to fetch questions:', error);
-      } finally {
-        setLoading(false);
+    window.scrollTo(0, 0);
+    router.prefetch('/concerns');
+    // 진단 시작 시간 기록
+    setDiagnosisStartTime();
+    // 진단 시작 기록
+    saveProgress(currentQuestionIndex);
+  }, [router]);
+
+
+  // 페이지 이탈 시 진행 상황 저장
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      const currentIndex = useAssessmentStore.getState().currentQuestionIndex;
+      // sendBeacon으로 비동기 저장 (페이지 닫혀도 전송됨)
+      navigator.sendBeacon(
+        '/api/assessments',
+        JSON.stringify({
+          id: localStorage.getItem('leadmind-session-id'),
+          status: 'diagnosis',
+          lastQuestionIndex: currentIndex + 1, // 1-indexed (Q1=1, Q23=23)
+          answers: useAssessmentStore.getState().answers,
+        })
+      );
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        saveProgress(useAssessmentStore.getState().currentQuestionIndex);
       }
-    }
-    fetchQuestions();
-  }, []);
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [saveProgress]);
 
   // 닉네임 없으면 온보딩으로
   useEffect(() => {
@@ -71,8 +107,6 @@ export default function DiagnosisPage() {
 
   // 브라우저 뒤로가기 버튼 처리
   useEffect(() => {
-    if (loading || questions.length === 0) return;
-
     const handlePopState = () => {
       // 현재 스토어의 인덱스 확인
       const storeIndex = useAssessmentStore.getState().currentQuestionIndex;
@@ -88,12 +122,10 @@ export default function DiagnosisPage() {
 
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
-  }, [loading, questions.length, prevQuestion, router]);
+  }, [prevQuestion, router]);
 
   // 문항 앞으로 이동 시에만 히스토리 추가 (뒤로가기 시에는 추가하지 않음)
   useEffect(() => {
-    if (loading || questions.length === 0) return;
-
     // 뒤로가기로 인한 변경이면 히스토리 추가하지 않음
     if (isBackNavigation.current) {
       isBackNavigation.current = false;
@@ -107,7 +139,7 @@ export default function DiagnosisPage() {
     }
 
     prevQuestionIndex.current = currentQuestionIndex;
-  }, [currentQuestionIndex, loading, questions.length]);
+  }, [currentQuestionIndex]);
 
   const currentQuestion = questions[safeQuestionIndex];
   const currentAnswer = currentQuestion ? answers[currentQuestion.id] : undefined;
@@ -116,6 +148,12 @@ export default function DiagnosisPage() {
     if (!currentQuestion) return;
 
     setAnswer(currentQuestion.id, score);
+
+    // 5문항마다 또는 마지막 문항일 때 진행 상황 저장
+    const nextIndex = safeQuestionIndex + 1;
+    if (nextIndex % 5 === 0 || nextIndex >= totalQuestions) {
+      saveProgress(safeQuestionIndex);
+    }
 
     // 자동으로 다음 문항으로 이동
     setTimeout(() => {
@@ -135,17 +173,6 @@ export default function DiagnosisPage() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--color-background)]">
-        <div className="text-center">
-          <div className="w-8 h-8 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-[var(--color-gray-500)]">문항을 불러오는 중...</p>
-        </div>
-      </div>
-    );
-  }
-
   if (!currentQuestion) {
     // 문항 로드 실패 또는 데이터 없음
     return (
@@ -164,7 +191,7 @@ export default function DiagnosisPage() {
   }
 
   return (
-    <div className="fixed inset-0 flex flex-col bg-[var(--color-background)]">
+    <div className="fixed top-0 bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] flex flex-col bg-[var(--color-background)]">
       {/* Header - 상단 고정 */}
       <div className="shrink-0 bg-white">
         <Header title="리더십 진단" showBack onBack={handleBack} />
@@ -199,7 +226,7 @@ export default function DiagnosisPage() {
       </div>
 
       {/* Scale Buttons - 화면 2/3 지점에 고정 */}
-      <div key={`buttons-${currentQuestion.id}`} className="absolute left-0 right-0 top-[60%] px-6">
+      <div key={`buttons-${currentQuestion.id}`} className="absolute inset-x-0 top-[60%] px-6">
         <div className="flex justify-center gap-3">
           {[1, 2, 3, 4, 5, 6].map((score) => {
             const isSelected = currentAnswer === score;

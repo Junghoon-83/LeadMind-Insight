@@ -3,40 +3,29 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, X, ChevronDown, ChevronUp } from 'lucide-react';
+import { Plus, X, ChevronDown, ChevronUp, Loader2 } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import { Button, Card, Input } from '@/components/ui';
 import { useAssessmentStore } from '@/store/useAssessmentStore';
 import { saveAssessment } from '@/lib/saveAssessment';
-import type { FollowershipTypeInfo } from '@/types';
+import { followershipTypes as staticFollowershipTypes, type FollowershipTypeCode } from '@/data/followershipTypes';
 
 export default function TeamInputPage() {
   const router = useRouter();
   const { nickname, teamMembers, addTeamMember, removeTeamMember } =
     useAssessmentStore();
 
-  const [followershipTypes, setFollowershipTypes] = useState<Record<string, FollowershipTypeInfo>>({});
-  const [loading, setLoading] = useState(true);
+  const followershipTypes = staticFollowershipTypes;
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [expandedType, setExpandedType] = useState<string | null>(null);
   const [memberName, setMemberName] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
 
-  // 데이터 로드
+  // 다음 페이지 프리페치
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const res = await fetch('/api/followership');
-        const data = await res.json();
-        setFollowershipTypes(data.followershipTypes || {});
-      } catch (error) {
-        console.error('Failed to fetch data:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchData();
-  }, []);
+    router.prefetch('/team-loading');
+  }, [router]);
 
   useEffect(() => {
     if (!nickname) {
@@ -67,27 +56,21 @@ export default function TeamInputPage() {
     router.replace('/result');
   };
 
-  const handleNext = async () => {
-    // 팀원 입력 완료 시 저장
-    await saveAssessment({
+  const handleNext = () => {
+    if (isNavigating) return;
+    setIsNavigating(true);
+
+    // 백그라운드에서 저장 (비동기, fire-and-forget)
+    saveAssessment({
       status: 'team',
       teamMembers: teamMembers.map((m) => ({ name: m.name, type: m.type })),
     });
+
+    // 즉시 화면 전환
     router.push('/team-loading');
   };
 
   const followershipTypesList = Object.values(followershipTypes);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--color-background)]">
-        <div className="text-center">
-          <div className="w-8 h-8 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-[var(--color-gray-500)]">데이터를 불러오는 중...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--color-background)]">
@@ -128,16 +111,13 @@ export default function TeamInputPage() {
                 >
                   {/* Header */}
                   <div className="flex items-center justify-between p-4">
-                    <div className="flex items-center gap-3 flex-1">
-                      <span className="text-2xl">{type.icon}</span>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-[var(--color-text)]">
-                          {type.name}
-                        </h3>
-                        <p className="text-xs text-[var(--color-primary)] truncate">
-                          {type.title}
-                        </p>
-                      </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-[var(--color-text)]">
+                        {type.name}
+                      </h3>
+                      <p className="text-xs text-[var(--color-primary)] truncate">
+                        {type.title}
+                      </p>
                     </div>
                     <div className="flex items-center gap-2">
                       {/* Expand Button */}
@@ -206,7 +186,7 @@ export default function TeamInputPage() {
             <div className="space-y-2">
               <AnimatePresence>
                 {teamMembers.map((member) => {
-                  const typeInfo = followershipTypes[member.type];
+                  const typeInfo = followershipTypes[member.type as FollowershipTypeCode];
                   return (
                     <motion.div
                       key={member.id}
@@ -215,16 +195,13 @@ export default function TeamInputPage() {
                       exit={{ opacity: 0, x: 20 }}
                       className="flex items-center justify-between p-3 bg-white rounded-xl"
                     >
-                      <div className="flex items-center gap-3">
-                        <span className="text-xl">{typeInfo?.icon || '👤'}</span>
-                        <div>
-                          <p className="font-medium text-[var(--color-text)]">
-                            {member.name}
-                          </p>
-                          <p className="text-xs text-[var(--color-gray-400)]">
-                            {typeInfo?.name || member.type}
-                          </p>
-                        </div>
+                      <div>
+                        <p className="font-medium text-[var(--color-text)]">
+                          {member.name}
+                        </p>
+                        <p className="text-xs text-[var(--color-gray-400)]">
+                          {typeInfo?.name || member.type}
+                        </p>
                       </div>
                       <button
                         onClick={() => removeTeamMember(member.id)}
@@ -243,8 +220,15 @@ export default function TeamInputPage() {
 
       {/* Bottom Button */}
       <div className="px-6 pb-8">
-        <Button fullWidth onClick={handleNext} disabled={teamMembers.length === 0}>
-          결과 보기
+        <Button fullWidth onClick={handleNext} disabled={teamMembers.length === 0 || isNavigating}>
+          {isNavigating ? (
+            <>
+              <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+              분석 준비 중...
+            </>
+          ) : (
+            '결과 보기'
+          )}
         </Button>
         <p className="text-center text-sm text-[var(--color-gray-400)] mt-3">
           최소 1명 이상의 팀원을 추가해주세요
@@ -272,7 +256,7 @@ export default function TeamInputPage() {
                 팀원 이름 입력
               </h3>
               <p className="text-sm text-[var(--color-gray-600)] mb-4">
-                {selectedType && followershipTypes[selectedType]?.name} 유형의 팀원
+                {selectedType && followershipTypes[selectedType as FollowershipTypeCode]?.name} 유형의 팀원
                 이름을 입력해주세요
               </p>
               <Input
