@@ -111,7 +111,7 @@ export default function DiagnosisPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[var(--color-background)]">
-        <div ref={topRef} className="absolute top-0 left-0" />
+        <div id="top" ref={topRef} className="absolute top-0 left-0" />
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-[var(--color-gray-500)]">문항을 불러오는 중...</p>
@@ -139,7 +139,7 @@ export default function DiagnosisPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--color-background)]">
-      <div ref={topRef} />
+      <div id="top" ref={topRef} />
       <Header title="리더십 진단" showBack onBack={handleBack} />
 
       {/* Progress */}

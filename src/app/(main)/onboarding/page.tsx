@@ -77,7 +77,7 @@ export default function OnboardingPage() {
   };
 
   const handleStart = () => {
-    router.push('/diagnosis', { scroll: true });
+    router.push('/diagnosis#top');
   };
 
   return (
