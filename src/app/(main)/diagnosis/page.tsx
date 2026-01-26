@@ -140,11 +140,14 @@ export default function DiagnosisPage() {
   return (
     <div className="min-h-screen flex flex-col bg-[var(--color-background)]">
       <div id="top" ref={topRef} />
-      <Header title="리더십 진단" showBack onBack={handleBack} />
 
-      {/* Progress */}
-      <div className="px-6 py-4 bg-white">
-        <ProgressBar current={safeQuestionIndex + 1} total={totalQuestions} />
+      {/* 상단 고정 영역 */}
+      <div className="sticky top-0 z-10 bg-white">
+        <Header title="리더십 진단" showBack onBack={handleBack} />
+        {/* Progress */}
+        <div className="px-6 py-4">
+          <ProgressBar current={safeQuestionIndex + 1} total={totalQuestions} />
+        </div>
       </div>
 
       {/* Question */}
