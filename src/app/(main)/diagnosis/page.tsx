@@ -26,22 +26,32 @@ export default function DiagnosisPage() {
 
   // 페이지 로드 시 스크롤 맨 위로 (모바일 대응)
   useEffect(() => {
-    if (!loading) {
-      // 모바일 브라우저에서 렌더링 완료 후 스크롤
-      const scrollToTop = () => {
-        window.scrollTo(0, 0);
-        document.documentElement.scrollTop = 0;
-        document.body.scrollTop = 0;
-      };
-
-      // 즉시 실행
-      scrollToTop();
-      // 렌더링 후 재실행
-      requestAnimationFrame(scrollToTop);
-      // 추가 딜레이 후 재실행 (모바일 대응)
-      setTimeout(scrollToTop, 100);
+    // 브라우저 자동 스크롤 복원 비활성화
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
     }
-  }, [loading]);
+
+    const scrollToTop = () => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    };
+
+    // 즉시 실행
+    scrollToTop();
+    // 렌더링 후 재실행
+    requestAnimationFrame(scrollToTop);
+    // 추가 딜레이 후 재실행 (모바일 대응)
+    const timer1 = setTimeout(scrollToTop, 50);
+    const timer2 = setTimeout(scrollToTop, 150);
+    const timer3 = setTimeout(scrollToTop, 300);
+
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      clearTimeout(timer3);
+    };
+  }, []);
 
   // 문항 데이터 로드
   useEffect(() => {
