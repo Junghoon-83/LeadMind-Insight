@@ -118,6 +118,7 @@ export default function ProfilePage() {
   const [showTermsModal, setShowTermsModal] = useState(false);
 
   useEffect(() => {
+    router.prefetch('/result');
     if (!nickname) {
       router.replace('/onboarding');
     }
@@ -159,7 +160,7 @@ export default function ProfilePage() {
     validateEmail(formData.email) &&
     formData.agreedToTerms;
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (!isFormValid) return;
 
     setProfile({
@@ -170,8 +171,11 @@ export default function ProfilePage() {
       agreedToTerms: formData.agreedToTerms,
     });
 
-    // 프로필 완료 시 전체 데이터 저장
-    await saveAssessment({
+    // 즉시 화면 전환 (빠른 UX)
+    router.push('/result');
+
+    // 백그라운드에서 저장 (비동기, fire-and-forget)
+    saveAssessment({
       status: 'profile',
       nickname,
       company: formData.company,
@@ -186,8 +190,6 @@ export default function ProfilePage() {
       leadershipType: leadershipType || undefined,
       concerns: selectedConcerns,
     });
-
-    router.push('/result');
   };
 
   const handleBack = () => {

@@ -8,7 +8,7 @@ import { ChevronRight, ImageIcon, RotateCcw, Play, Eye } from 'lucide-react';
 import { Button, Input } from '@/components/ui';
 import { onboardingSlides } from '@/data/onboarding';
 import { useAssessmentStore } from '@/store/useAssessmentStore';
-import { saveAssessment } from '@/lib/saveAssessment';
+import { saveAssessment, resetSession } from '@/lib/saveAssessment';
 
 type Step = 'carousel' | 'nickname' | 'intro';
 type PreviousDataType = 'completed' | 'in-progress' | null;
@@ -23,10 +23,11 @@ export default function OnboardingPage() {
   const { setNickname, nickname, leadershipType, answers, reset } = useAssessmentStore();
   const [isHydrated, setIsHydrated] = useState(false);
 
-  // 클라이언트에서만 실행되도록 hydration 체크
+  // 클라이언트에서만 실행되도록 hydration 체크 + 프리페치
   useEffect(() => {
     setIsHydrated(true);
-  }, []);
+    router.prefetch('/diagnosis');
+  }, [router]);
 
   // 기존 데이터 확인 (hydration 완료 후)
   useEffect(() => {
@@ -55,9 +56,10 @@ export default function OnboardingPage() {
     router.push('/diagnosis');
   };
 
-  // 새로 시작
+  // 새로 시작 (새 세션 ID 생성)
   const handleStartFresh = () => {
-    reset();
+    reset();              // Zustand 스토어 리셋
+    resetSession();       // 세션 ID 및 시간 정보 리셋
     setShowPreviousDataModal(false);
     setPreviousDataType(null);
   };
@@ -77,13 +79,15 @@ export default function OnboardingPage() {
     }
   };
 
-  const handleStart = async () => {
-    // 온보딩 완료 시 저장
-    await saveAssessment({
+  const handleStart = () => {
+    // 즉시 화면 전환 (빠른 UX)
+    router.push('/diagnosis');
+
+    // 백그라운드에서 저장 (비동기, fire-and-forget)
+    saveAssessment({
       status: 'onboarding',
       nickname: nickname,
     });
-    router.push('/diagnosis');
   };
 
   return (

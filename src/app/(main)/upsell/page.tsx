@@ -3,11 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Check, MessageCircle, Send } from 'lucide-react';
+import { Check, MessageCircle, Send, Loader2 } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import { Button, Card } from '@/components/ui';
 import { useAssessmentStore } from '@/store/useAssessmentStore';
-import { saveAssessment } from '@/lib/saveAssessment';
+import { saveAssessment, getOrCreateSessionId } from '@/lib/saveAssessment';
 import type { ServiceType } from '@/types';
 
 interface ServiceOption {
@@ -41,8 +41,10 @@ const serviceOptions: ServiceOption[] = [
 
 export default function UpsellPage() {
   const router = useRouter();
-  const { nickname, email } = useAssessmentStore();
+  const { nickname, email, company, department, jobRole, leadershipType } = useAssessmentStore();
   const [selectedServices, setSelectedServices] = useState<ServiceType[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
     if (!nickname) {
@@ -57,13 +59,42 @@ export default function UpsellPage() {
   };
 
   const handleApply = async () => {
-    // 서비스 선택 저장
-    await saveAssessment({
-      status: 'completed',
-      selectedServices,
-    });
+    // 중복 제출 방지
+    if (isSubmitting || isSubmitted) return;
 
-    alert('서비스 신청이 완료되었습니다. 담당자가 곧 연락드리겠습니다.');
+    setIsSubmitting(true);
+
+    try {
+      // 서비스 선택 저장 (기존 assessment)
+      await saveAssessment({
+        status: 'completed',
+        selectedServices,
+      });
+
+      // 서비스 신청 별도 저장 (서비스신청 시트)
+      const sessionId = getOrCreateSessionId();
+      await fetch('/api/service-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: sessionId,
+          nickname,
+          email,
+          company,
+          department,
+          jobRole,
+          leadershipType,
+          services: selectedServices,
+        }),
+      });
+
+      setIsSubmitted(true);
+    } catch (error) {
+      console.error('Failed to save service request:', error);
+      alert('신청 중 오류가 발생했습니다. 다시 시도해주세요.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleBack = () => {
@@ -166,14 +197,37 @@ export default function UpsellPage() {
 
       {/* Buttons */}
       <div className="px-6 pb-8 space-y-3">
-        <Button
-          fullWidth
-          onClick={handleApply}
-          disabled={selectedServices.length === 0}
-        >
-          <Send className="w-5 h-5 mr-2" />
-          서비스 신청하기
-        </Button>
+        {isSubmitted ? (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="p-4 bg-green-50 border border-green-200 rounded-xl text-center"
+          >
+            <Check className="w-8 h-8 text-green-500 mx-auto mb-2" />
+            <p className="font-semibold text-green-700">신청이 완료되었습니다!</p>
+            <p className="text-sm text-green-600 mt-1">
+              담당자가 곧 연락드리겠습니다.
+            </p>
+          </motion.div>
+        ) : (
+          <Button
+            fullWidth
+            onClick={handleApply}
+            disabled={selectedServices.length === 0 || isSubmitting}
+          >
+            {isSubmitting ? (
+              <>
+                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                신청 중...
+              </>
+            ) : (
+              <>
+                <Send className="w-5 h-5 mr-2" />
+                서비스 신청하기
+              </>
+            )}
+          </Button>
+        )}
         <Button fullWidth variant="outline" onClick={handleInquiry}>
           <MessageCircle className="w-5 h-5 mr-2" />
           문의하기
