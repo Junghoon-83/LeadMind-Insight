@@ -206,16 +206,15 @@ export default function DiagnosisPage() {
       <div className="absolute left-0 right-0 top-[60%] px-6">
         <div className="flex justify-center gap-3">
           {[1, 2, 3, 4, 5, 6].map((score) => (
-            <div key={score} className="flex flex-col items-center gap-2">
-              <motion.button
-                whileTap={{ scale: 0.95 }}
+            <div key={`${currentQuestion.id}-${score}`} className="flex flex-col items-center gap-2">
+              <button
                 onClick={() => handleScoreSelect(score)}
                 className={`scale-btn ${
                   currentAnswer === score ? 'selected' : ''
                 }`}
               >
                 {score}
-              </motion.button>
+              </button>
               {score === 1 && (
                 <span className="text-xs text-[var(--color-gray-400)] whitespace-nowrap">전혀 아니다</span>
               )}
