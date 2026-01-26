@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from '@/components/layout/Header';
@@ -10,7 +10,6 @@ import type { Question } from '@/types';
 
 export default function DiagnosisPage() {
   const router = useRouter();
-  const topRef = useRef<HTMLDivElement>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [totalQuestions, setTotalQuestions] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -25,26 +24,10 @@ export default function DiagnosisPage() {
     nickname,
   } = useAssessmentStore();
 
-  // 스크롤 맨 위로 (여러 시점에서 실행)
+  // 페이지 로드 시 스크롤 맨 위로
   useEffect(() => {
-    const scrollToTop = () => {
-      window.scrollTo(0, 0);
-      if (topRef.current) {
-        topRef.current.scrollIntoView();
-      }
-    };
-
-    // 즉시 실행
-    scrollToTop();
-
-    // 로딩 완료 후 실행
-    if (!loading) {
-      scrollToTop();
-      setTimeout(scrollToTop, 50);
-      setTimeout(scrollToTop, 200);
-      setTimeout(scrollToTop, 500);
-    }
-  }, [loading]);
+    window.scrollTo(0, 0);
+  }, []);
 
   // 문항 데이터 로드
   useEffect(() => {
@@ -111,7 +94,6 @@ export default function DiagnosisPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[var(--color-background)]">
-        <div id="top" ref={topRef} className="absolute top-0 left-0" />
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-[var(--color-gray-500)]">문항을 불러오는 중...</p>
@@ -139,7 +121,6 @@ export default function DiagnosisPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--color-background)]">
-      <div id="top" ref={topRef} />
       <Header title="리더십 진단" showBack onBack={handleBack} />
 
       {/* Progress */}

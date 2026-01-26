@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, ImageIcon, RotateCcw, Play, Eye } from 'lucide-react';
 import { Button, Input } from '@/components/ui';
@@ -78,24 +77,23 @@ export default function OnboardingPage() {
   };
 
   const handleStart = () => {
-    router.push('/diagnosis#top');
+    router.push('/diagnosis');
   };
 
   return (
-    <div className="h-[100dvh] overflow-hidden flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-white">
       <AnimatePresence mode="wait">
-        {/* Carousel Step - 100dvh로 화면에 맞춤 (스크롤 방지) */}
-        {/* 원복: h-[100dvh] overflow-hidden → flex-1, pt-6 pb-4 → pt-12 pb-6, pb-6 → pb-10 */}
+        {/* Carousel Step */}
         {step === 'carousel' && (
           <motion.div
             key="carousel"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="h-[100dvh] overflow-hidden flex flex-col"
+            className="flex-1 flex flex-col"
           >
             {/* Slide Content */}
-            <div className="flex-1 flex flex-col items-center justify-center px-6 pt-6 pb-4">
+            <div className="flex-1 flex flex-col items-center justify-center px-6 pt-12 pb-6">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentSlide}
@@ -107,7 +105,7 @@ export default function OnboardingPage() {
                 >
                   {/* Large Rounded Image */}
                   <div
-                    className="w-[240px] h-[240px] rounded-[2rem] bg-gradient-to-br from-violet-100 via-purple-50 to-indigo-100 flex items-center justify-center overflow-hidden relative"
+                    className="w-[280px] h-[280px] rounded-[2.5rem] bg-gradient-to-br from-violet-100 via-purple-50 to-indigo-100 flex items-center justify-center overflow-hidden relative"
                     style={{ boxShadow: '0 20px 40px -12px rgba(139, 92, 246, 0.25)' }}
                   >
                     {/* Subtle pattern overlay */}
@@ -116,20 +114,20 @@ export default function OnboardingPage() {
                       <Image
                         src={onboardingSlides[currentSlide].image!}
                         alt={onboardingSlides[currentSlide].title}
-                        width={240}
-                        height={240}
+                        width={280}
+                        height={280}
                         className="w-full h-full object-cover relative z-10"
                       />
                     ) : (
-                      <div className="flex flex-col items-center gap-2 text-violet-300 relative z-10">
-                        <ImageIcon className="w-14 h-14" />
+                      <div className="flex flex-col items-center gap-3 text-violet-300 relative z-10">
+                        <ImageIcon className="w-16 h-16" />
                         <span className="text-sm font-medium">이미지 준비중</span>
                       </div>
                     )}
                   </div>
 
                   {/* Dots Indicator - Between Image and Title */}
-                  <div className="flex justify-center gap-2.5 mt-6 mb-4">
+                  <div className="flex justify-center gap-2.5 mt-10 mb-6">
                     {onboardingSlides.map((_, index) => (
                       <button
                         key={index}
@@ -144,12 +142,12 @@ export default function OnboardingPage() {
                   </div>
 
                   {/* Title */}
-                  <h2 className="text-xl font-bold text-[var(--color-text)] mb-2 tracking-tight">
+                  <h2 className="text-[1.625rem] font-bold text-[var(--color-text)] mb-3 tracking-tight">
                     {onboardingSlides[currentSlide].title}
                   </h2>
 
                   {/* Description */}
-                  <p className="text-[var(--color-gray-600)] whitespace-pre-line leading-[1.6] text-sm px-2">
+                  <p className="text-[var(--color-gray-600)] whitespace-pre-line leading-[1.7] text-[15px] px-2">
                     {onboardingSlides[currentSlide].description}
                   </p>
                 </motion.div>
@@ -157,7 +155,7 @@ export default function OnboardingPage() {
             </div>
 
             {/* Button */}
-            <div className="px-6 pb-6 pt-2 flex-shrink-0">
+            <div className="px-6 pb-10 pt-4">
               <Button fullWidth onClick={handleNextSlide}>
                 {currentSlide < onboardingSlides.length - 1 ? (
                   <>
@@ -172,15 +170,14 @@ export default function OnboardingPage() {
           </motion.div>
         )}
 
-        {/* Nickname Step - 100dvh로 화면에 맞춤 (스크롤 방지) */}
-        {/* 원복: h-[100dvh] overflow-hidden → flex-1, pt-8 pb-6 → pt-16 pb-10 */}
+        {/* Nickname Step */}
         {step === 'nickname' && (
           <motion.div
             key="nickname"
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -50 }}
-            className="h-[100dvh] overflow-hidden flex flex-col px-6 pt-8 pb-6"
+            className="flex-1 flex flex-col px-6 pt-16 pb-10"
           >
             <div className="flex-1 flex flex-col justify-center">
               <motion.div
@@ -188,10 +185,10 @@ export default function OnboardingPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                <h2 className="text-xl font-bold text-[var(--color-text)] mb-1">
+                <h2 className="text-2xl font-bold text-[var(--color-text)] mb-1">
                   리더님, 환영합니다!
                 </h2>
-                <h2 className="text-lg font-medium text-[var(--color-primary)] mb-8">
+                <h2 className="text-xl font-medium text-[var(--color-primary)] mb-10">
                   어떻게 불러드리면 좋을까요?
                 </h2>
 
@@ -213,22 +210,20 @@ export default function OnboardingPage() {
               fullWidth
               onClick={handleNicknameSubmit}
               disabled={!nicknameInput.trim()}
-              className="flex-shrink-0"
             >
               저장하기
             </Button>
           </motion.div>
         )}
 
-        {/* Intro Step - 100dvh로 화면에 맞춤 (스크롤 방지) */}
-        {/* 원복: h-[100dvh] overflow-hidden → flex-1, pt-8 pb-6 → pt-16 pb-10 */}
+        {/* Intro Step */}
         {step === 'intro' && (
           <motion.div
             key="intro"
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -50 }}
-            className="h-[100dvh] overflow-hidden flex flex-col px-6 pt-8 pb-6"
+            className="flex-1 flex flex-col px-6 pt-16 pb-10"
           >
             <div className="flex-1 flex flex-col justify-center">
               <motion.div
@@ -237,21 +232,21 @@ export default function OnboardingPage() {
                 transition={{ delay: 0.2 }}
                 className="text-center"
               >
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-[var(--color-violet-100)] to-[var(--color-violet-200)] flex items-center justify-center shadow-md">
-                  <span className="text-3xl">👋</span>
+                <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-[var(--color-violet-100)] to-[var(--color-violet-200)] flex items-center justify-center shadow-md">
+                  <span className="text-4xl">👋</span>
                 </div>
 
-                <h2 className="text-xl font-bold text-[var(--color-text)] mb-1">
+                <h2 className="text-2xl font-bold text-[var(--color-text)] mb-1">
                   <span className="text-[var(--color-primary)]">{nickname}</span>님, 반가워요.
                 </h2>
 
-                <p className="text-[var(--color-gray-600)] mt-3 leading-relaxed text-sm">
+                <p className="text-[var(--color-gray-600)] mt-4 leading-relaxed">
                   변화의 시대, 새로운 리더십을 위한<br />
                   발걸음을 시작해볼까요?
                 </p>
 
-                <div className="mt-5 p-4 rounded-2xl bg-[var(--color-violet-50)] border border-[var(--color-violet-100)]">
-                  <div className="flex items-center justify-between mb-2">
+                <div className="mt-8 p-5 rounded-2xl bg-[var(--color-violet-50)] border border-[var(--color-violet-100)]">
+                  <div className="flex items-center justify-between mb-3">
                     <span className="text-sm text-[var(--color-gray-600)]">예상 소요 시간</span>
                     <span className="font-semibold text-[var(--color-primary)]">약 5분</span>
                   </div>
@@ -261,20 +256,16 @@ export default function OnboardingPage() {
                   </div>
                 </div>
 
-                <p className="text-xs text-[var(--color-gray-400)] mt-4 leading-relaxed">
+                <p className="text-sm text-[var(--color-gray-400)] mt-6 leading-relaxed">
                   솔직하게 답변해 주실수록<br />
                   더 정확한 진단 결과를 받으실 수 있습니다.
                 </p>
               </motion.div>
             </div>
 
-            <Link
-              href="/diagnosis"
-              scroll={true}
-              className="w-full h-[52px] rounded-xl bg-[var(--color-action)] text-white font-semibold flex items-center justify-center shadow-[var(--shadow-button)] flex-shrink-0"
-            >
+            <Button fullWidth onClick={handleStart}>
               진단 시작하기
-            </Link>
+            </Button>
           </motion.div>
         )}
       </AnimatePresence>
