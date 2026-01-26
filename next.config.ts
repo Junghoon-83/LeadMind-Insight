@@ -1,9 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Docker/K8s 배포용 standalone 출력
-  output: "standalone",
-
   // 보안 헤더 설정
   async headers() {
     return [
