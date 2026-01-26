@@ -24,10 +24,17 @@ export default function DiagnosisPage() {
     nickname,
   } = useAssessmentStore();
 
-  // 페이지 로드 시 스크롤 맨 위로
+  // 페이지 로드 시 스크롤 맨 위로 (모바일 대응)
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    if (!loading) {
+      // 모바일 브라우저 호환성을 위해 여러 방식 시도
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      });
+    }
+  }, [loading]);
 
   // 문항 데이터 로드
   useEffect(() => {
