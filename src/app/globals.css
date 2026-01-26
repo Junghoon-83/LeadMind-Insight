@@ -1,26 +1,177 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css');
 @import "tailwindcss";
 
+/* Design System: Modern Insight Purple */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Primary Colors */
+  --color-primary: #6D28D9;           /* Insight Purple - violet-700 */
+  --color-action: #7C3AED;            /* Vivid Violet - violet-600 */
+  --color-action-hover: #5B21B6;      /* violet-800 */
+  --color-background: #F5F3FF;        /* Soft Lavender - violet-50 */
+  --color-text: #1e1b4b;              /* Dark Night - indigo-950 */
+  --color-point: #10B981;             /* Growth Mint - emerald-500 */
+
+  /* Extended Colors */
+  --color-white: #ffffff;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-400: #9ca3af;
+  --color-gray-600: #4b5563;
+  --color-violet-100: #ede9fe;
+  --color-violet-200: #ddd6fe;
+  --color-violet-300: #c4b5fd;
+
+  /* Shadows */
+  --shadow-button: 0 4px 6px -1px rgba(124, 58, 237, 0.2);
+  --shadow-card: 0 4px 6px -1px rgba(124, 58, 237, 0.1);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-primary: var(--color-primary);
+  --color-action: var(--color-action);
+  --color-action-hover: var(--color-action-hover);
+  --color-background: var(--color-background);
+  --color-text: var(--color-text);
+  --color-point: var(--color-point);
+  --font-sans: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Base Styles */
+html {
+  font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-background);
+  color: var(--color-text);
+  font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Mobile First Container */
+.app-container {
+  max-width: 430px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: var(--color-white);
+  position: relative;
+}
+
+/* Button Styles */
+.btn-primary {
+  height: 52px;
+  border-radius: 12px;
+  background: var(--color-action);
+  color: white;
+  font-weight: 600;
+  box-shadow: var(--shadow-button);
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: var(--color-action-hover);
+}
+
+.btn-primary:disabled {
+  background: var(--color-gray-400);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* Card Styles */
+.card {
+  background: var(--color-white);
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
+}
+
+/* Progress Bar */
+.progress-bar {
+  background: var(--color-violet-200);
+  border-radius: 999px;
+  height: 8px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  background: var(--color-action);
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+/* Scale Button (1-6 Rating) */
+.scale-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  border: 2px solid var(--color-violet-200);
+  background: var(--color-white);
+  font-weight: 600;
+  color: var(--color-text);
+  transition: all 0.2s ease;
+}
+
+.scale-btn:hover {
+  border-color: var(--color-action);
+  background: var(--color-violet-100);
+}
+
+.scale-btn.selected {
+  border-color: var(--color-action);
+  background: var(--color-action);
+  color: white;
+}
+
+/* Keyword Chip */
+.keyword-chip {
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 2px solid var(--color-violet-200);
+  background: var(--color-white);
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.keyword-chip:hover {
+  border-color: var(--color-action);
+}
+
+.keyword-chip.selected {
+  border-color: var(--color-action);
+  background: var(--color-violet-100);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-violet-300);
+  border-radius: 2px;
+}
+
+/* Touch Action for Mobile */
+@media (hover: none) {
+  .btn-primary:hover {
+    background: var(--color-action);
+  }
+
+  .scale-btn:hover {
+    border-color: var(--color-violet-200);
+    background: var(--color-white);
+  }
+
+  .keyword-chip:hover {
+    border-color: var(--color-violet-200);
+  }
 }

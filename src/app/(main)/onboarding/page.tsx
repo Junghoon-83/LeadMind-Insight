@@ -1,0 +1,231 @@
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronRight, ImageIcon } from 'lucide-react';
+import { Button, Input } from '@/components/ui';
+import { onboardingSlides } from '@/data/onboarding';
+import { useAssessmentStore } from '@/store/useAssessmentStore';
+
+type Step = 'carousel' | 'nickname' | 'intro';
+
+export default function OnboardingPage() {
+  const router = useRouter();
+  const [step, setStep] = useState<Step>('carousel');
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [nicknameInput, setNicknameInput] = useState('');
+  const { setNickname, nickname } = useAssessmentStore();
+
+  const handleNextSlide = () => {
+    if (currentSlide < onboardingSlides.length - 1) {
+      setCurrentSlide(currentSlide + 1);
+    } else {
+      setStep('nickname');
+    }
+  };
+
+  const handleNicknameSubmit = () => {
+    if (nicknameInput.trim()) {
+      setNickname(nicknameInput.trim());
+      setStep('intro');
+    }
+  };
+
+  const handleStart = () => {
+    router.push('/diagnosis');
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col bg-white">
+      <AnimatePresence mode="wait">
+        {/* Carousel Step */}
+        {step === 'carousel' && (
+          <motion.div
+            key="carousel"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="flex-1 flex flex-col"
+          >
+            {/* Slide Content */}
+            <div className="flex-1 flex flex-col items-center justify-center px-6 pt-12 pb-6">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentSlide}
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -50 }}
+                  transition={{ duration: 0.3 }}
+                  className="text-center w-full flex flex-col items-center"
+                >
+                  {/* Large Rounded Image */}
+                  <div
+                    className="w-[280px] h-[280px] rounded-[2.5rem] bg-gradient-to-br from-violet-100 via-purple-50 to-indigo-100 flex items-center justify-center overflow-hidden relative"
+                    style={{ boxShadow: '0 20px 40px -12px rgba(139, 92, 246, 0.25)' }}
+                  >
+                    {/* Subtle pattern overlay */}
+                    <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_50%_50%,rgba(139,92,246,0.1)_1px,transparent_1px)] bg-[length:20px_20px]" />
+                    {onboardingSlides[currentSlide].image ? (
+                      <Image
+                        src={onboardingSlides[currentSlide].image!}
+                        alt={onboardingSlides[currentSlide].title}
+                        width={280}
+                        height={280}
+                        className="w-full h-full object-cover relative z-10"
+                      />
+                    ) : (
+                      <div className="flex flex-col items-center gap-3 text-violet-300 relative z-10">
+                        <ImageIcon className="w-16 h-16" />
+                        <span className="text-sm font-medium">이미지 준비중</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Dots Indicator - Between Image and Title */}
+                  <div className="flex justify-center gap-2.5 mt-10 mb-6">
+                    {onboardingSlides.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentSlide(index)}
+                        className={`h-2.5 rounded-full transition-all duration-300 ${
+                          index === currentSlide
+                            ? 'w-7 bg-gradient-to-r from-violet-500 to-purple-500'
+                            : 'w-2.5 bg-violet-200 hover:bg-violet-300'
+                        }`}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Title */}
+                  <h2 className="text-[1.625rem] font-bold text-[var(--color-text)] mb-3 tracking-tight">
+                    {onboardingSlides[currentSlide].title}
+                  </h2>
+
+                  {/* Description */}
+                  <p className="text-[var(--color-gray-600)] whitespace-pre-line leading-[1.7] text-[15px] px-2">
+                    {onboardingSlides[currentSlide].description}
+                  </p>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            {/* Button */}
+            <div className="px-6 pb-10 pt-4">
+              <Button fullWidth onClick={handleNextSlide}>
+                {currentSlide < onboardingSlides.length - 1 ? (
+                  <>
+                    다음
+                    <ChevronRight className="w-5 h-5 ml-1" />
+                  </>
+                ) : (
+                  '시작하기'
+                )}
+              </Button>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Nickname Step */}
+        {step === 'nickname' && (
+          <motion.div
+            key="nickname"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -50 }}
+            className="flex-1 flex flex-col px-6 pt-16 pb-10"
+          >
+            <div className="flex-1 flex flex-col justify-center">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+              >
+                <h2 className="text-2xl font-bold text-[var(--color-text)] mb-1">
+                  리더님, 환영합니다!
+                </h2>
+                <h2 className="text-xl font-medium text-[var(--color-primary)] mb-10">
+                  어떻게 불러드리면 좋을까요?
+                </h2>
+
+                <Input
+                  placeholder="닉네임이나 영어 이름도 괜찮아요."
+                  value={nicknameInput}
+                  onChange={(e) => setNicknameInput(e.target.value)}
+                  maxLength={10}
+                  autoFocus
+                />
+
+                <p className="text-sm text-[var(--color-gray-400)] mt-3">
+                  최대 10자까지 입력 가능합니다
+                </p>
+              </motion.div>
+            </div>
+
+            <Button
+              fullWidth
+              onClick={handleNicknameSubmit}
+              disabled={!nicknameInput.trim()}
+            >
+              저장하기
+            </Button>
+          </motion.div>
+        )}
+
+        {/* Intro Step */}
+        {step === 'intro' && (
+          <motion.div
+            key="intro"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -50 }}
+            className="flex-1 flex flex-col px-6 pt-16 pb-10"
+          >
+            <div className="flex-1 flex flex-col justify-center">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-center"
+              >
+                <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-[var(--color-violet-100)] to-[var(--color-violet-200)] flex items-center justify-center shadow-md">
+                  <span className="text-4xl">👋</span>
+                </div>
+
+                <h2 className="text-2xl font-bold text-[var(--color-text)] mb-1">
+                  <span className="text-[var(--color-primary)]">{nickname}</span>님, 반가워요.
+                </h2>
+
+                <p className="text-[var(--color-gray-600)] mt-4 leading-relaxed">
+                  변화의 시대, 새로운 리더십을 위한<br />
+                  발걸음을 시작해볼까요?
+                </p>
+
+                <div className="mt-8 p-5 rounded-2xl bg-[var(--color-violet-50)] border border-[var(--color-violet-100)]">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-sm text-[var(--color-gray-600)]">예상 소요 시간</span>
+                    <span className="font-semibold text-[var(--color-primary)]">약 5분</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-[var(--color-gray-600)]">총 문항 수</span>
+                    <span className="font-semibold text-[var(--color-primary)]">23문항</span>
+                  </div>
+                </div>
+
+                <p className="text-sm text-[var(--color-gray-400)] mt-6 leading-relaxed">
+                  솔직하게 답변해 주실수록<br />
+                  더 정확한 진단 결과를 받으실 수 있습니다.
+                </p>
+              </motion.div>
+            </div>
+
+            <Button fullWidth onClick={handleStart}>
+              진단 시작하기
+            </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
