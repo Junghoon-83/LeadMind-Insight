@@ -27,12 +27,19 @@ export default function DiagnosisPage() {
   // 페이지 로드 시 스크롤 맨 위로 (모바일 대응)
   useEffect(() => {
     if (!loading) {
-      // 모바일 브라우저 호환성을 위해 여러 방식 시도
-      requestAnimationFrame(() => {
-        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      // 모바일 브라우저에서 렌더링 완료 후 스크롤
+      const scrollToTop = () => {
+        window.scrollTo(0, 0);
         document.documentElement.scrollTop = 0;
         document.body.scrollTop = 0;
-      });
+      };
+
+      // 즉시 실행
+      scrollToTop();
+      // 렌더링 후 재실행
+      requestAnimationFrame(scrollToTop);
+      // 추가 딜레이 후 재실행 (모바일 대응)
+      setTimeout(scrollToTop, 100);
     }
   }, [loading]);
 
