@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from '@/components/layout/Header';
@@ -8,11 +8,9 @@ import { ProgressBar, Card } from '@/components/ui';
 import { useAssessmentStore } from '@/store/useAssessmentStore';
 import type { Question } from '@/types';
 
-// SSR에서 useLayoutEffect 경고 방지
-const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
-
 export default function DiagnosisPage() {
   const router = useRouter();
+  const topRef = useRef<HTMLDivElement>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [totalQuestions, setTotalQuestions] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -27,42 +25,12 @@ export default function DiagnosisPage() {
     nickname,
   } = useAssessmentStore();
 
-  // 페이지 로드 시 스크롤 맨 위로 (동기적 실행)
-  useIsomorphicLayoutEffect(() => {
-    window.scrollTo(0, 0);
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-  }, []);
-
-  // 모바일 브라우저 스크롤 복원 대응
+  // 콘텐츠 로드 완료 후 스크롤
   useEffect(() => {
-    if ('scrollRestoration' in history) {
-      history.scrollRestoration = 'manual';
+    if (!loading && topRef.current) {
+      topRef.current.scrollIntoView({ behavior: 'instant', block: 'start' });
     }
-
-    const scrollToTop = () => {
-      window.scrollTo(0, 0);
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-    };
-
-    // pageshow 이벤트 (모바일 Safari bfcache 대응)
-    const handlePageShow = (e: PageTransitionEvent) => {
-      if (e.persisted) {
-        scrollToTop();
-      }
-    };
-
-    window.addEventListener('pageshow', handlePageShow);
-
-    // 딜레이 후 스크롤 (모바일 대응)
-    const timer = setTimeout(scrollToTop, 100);
-
-    return () => {
-      window.removeEventListener('pageshow', handlePageShow);
-      clearTimeout(timer);
-    };
-  }, []);
+  }, [loading]);
 
   // 문항 데이터 로드
   useEffect(() => {
@@ -156,6 +124,7 @@ export default function DiagnosisPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--color-background)]">
+      <div ref={topRef} />
       <Header title="리더십 진단" showBack onBack={handleBack} />
 
       {/* Progress */}
