@@ -245,21 +245,21 @@ export default function TeamInputPage() {
         </p>
       </div>
 
-      {/* Add Member Modal */}
+      {/* Add Member Modal - 중앙 배치로 키보드가 가리지 않도록 */}
       <AnimatePresence>
         {showModal && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 flex items-end justify-center z-50"
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-6"
             onClick={() => setShowModal(false)}
           >
             <motion.div
-              initial={{ y: '100%' }}
-              animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              className="bg-white w-full max-w-[430px] rounded-t-2xl p-6"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white w-full max-w-[380px] rounded-2xl p-6 shadow-xl"
               onClick={(e) => e.stopPropagation()}
             >
               <h3 className="text-lg font-bold text-[var(--color-text)] mb-4">
