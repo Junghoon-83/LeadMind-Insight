@@ -1,18 +1,6 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { persist } from 'zustand/middleware';
 import type { AssessmentScores, JobRole } from '@/types';
-
-// SSR-safe storage
-const getStorage = () => {
-  if (typeof window === 'undefined') {
-    return {
-      getItem: () => null,
-      setItem: () => {},
-      removeItem: () => {},
-    };
-  }
-  return localStorage;
-};
 
 interface TeamMemberInput {
   id: string;
@@ -21,10 +9,6 @@ interface TeamMemberInput {
 }
 
 interface AssessmentState {
-  // Hydration
-  _hasHydrated: boolean;
-  setHasHydrated: (state: boolean) => void;
-
   // Onboarding
   nickname: string;
   setNickname: (nickname: string) => void;
@@ -76,7 +60,6 @@ interface AssessmentState {
 }
 
 const initialState = {
-  _hasHydrated: false,
   nickname: '',
   currentQuestionIndex: 0,
   answers: {},
@@ -96,8 +79,6 @@ export const useAssessmentStore = create<AssessmentState>()(
   persist(
     (set) => ({
       ...initialState,
-
-      setHasHydrated: (state) => set({ _hasHydrated: state }),
 
       setNickname: (nickname) => set({ nickname }),
 
@@ -164,7 +145,6 @@ export const useAssessmentStore = create<AssessmentState>()(
     }),
     {
       name: 'leadmind-assessment',
-      storage: createJSONStorage(() => getStorage()),
       partialize: (state) => ({
         nickname: state.nickname,
         currentQuestionIndex: state.currentQuestionIndex,
@@ -179,15 +159,6 @@ export const useAssessmentStore = create<AssessmentState>()(
         teamMembers: state.teamMembers,
         assessmentId: state.assessmentId,
       }),
-      onRehydrateStorage: () => (state, error) => {
-        if (error) {
-          console.error('Hydration error:', error);
-          return;
-        }
-        if (state) {
-          state.setHasHydrated(true);
-        }
-      },
     }
   )
 );

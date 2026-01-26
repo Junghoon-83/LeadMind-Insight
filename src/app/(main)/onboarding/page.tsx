@@ -19,11 +19,17 @@ export default function OnboardingPage() {
   const [nicknameInput, setNicknameInput] = useState('');
   const [showPreviousDataModal, setShowPreviousDataModal] = useState(false);
   const [previousDataType, setPreviousDataType] = useState<PreviousDataType>(null);
-  const { setNickname, nickname, leadershipType, answers, reset, _hasHydrated } = useAssessmentStore();
+  const { setNickname, nickname, leadershipType, answers, reset } = useAssessmentStore();
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // 클라이언트에서만 실행되도록 hydration 체크
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   // 기존 데이터 확인 (hydration 완료 후)
   useEffect(() => {
-    if (!_hasHydrated) return;
+    if (!isHydrated) return;
 
     const hasAnswers = Object.keys(answers).length > 0;
     const hasResult = !!leadershipType;
@@ -35,7 +41,7 @@ export default function OnboardingPage() {
       setPreviousDataType('in-progress');
       setShowPreviousDataModal(true);
     }
-  }, [_hasHydrated, answers, leadershipType]);
+  }, [isHydrated, answers, leadershipType]);
 
   // 이전 결과 보기
   const handleViewPreviousResult = () => {
