@@ -80,13 +80,15 @@ export default function DiagnosisPage() {
       if (storeIndex > 0) {
         isBackNavigation.current = true;
         prevQuestion();
+      } else {
+        // Q1에서 뒤로가기 시 온보딩으로 이동
+        router.replace('/onboarding');
       }
-      // storeIndex가 0이면 브라우저 기본 동작 (이전 페이지로)
     };
 
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
-  }, [loading, questions.length, prevQuestion]);
+  }, [loading, questions.length, prevQuestion, router]);
 
   // 문항 앞으로 이동 시에만 히스토리 추가 (뒤로가기 시에는 추가하지 않음)
   useEffect(() => {
@@ -129,7 +131,7 @@ export default function DiagnosisPage() {
     if (safeQuestionIndex > 0) {
       prevQuestion();
     } else {
-      router.back();
+      router.replace('/onboarding');
     }
   };
 
