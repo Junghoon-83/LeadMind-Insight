@@ -77,6 +77,8 @@ export default function OnboardingPage() {
   };
 
   const handleStart = () => {
+    // 스크롤 맨 위로 초기화 후 페이지 이동
+    window.scrollTo(0, 0);
     router.push('/diagnosis');
   };
 
