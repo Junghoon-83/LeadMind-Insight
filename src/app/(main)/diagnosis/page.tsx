@@ -164,18 +164,15 @@ export default function DiagnosisPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[var(--color-background)]">
-      <Header title="리더십 진단" showBack onBack={handleBack} />
-
-      {/* Progress */}
-      <div className="px-6 py-4 bg-white">
-        <ProgressBar current={safeQuestionIndex + 1} total={totalQuestions} />
+    <div className="h-[100dvh] flex flex-col bg-[var(--color-background)] overflow-hidden">
+      {/* Header - 상단 고정 */}
+      <div className="shrink-0 bg-white">
+        <Header title="리더십 진단" showBack onBack={handleBack} />
       </div>
 
-      {/* Question */}
-      <div className="flex-1 flex flex-col px-6 py-8">
-        {/* Question Area - 고정 높이 */}
-        <div className="h-[280px] flex flex-col">
+      {/* Question - 중앙 스크롤 영역 */}
+      <div className="flex-1 overflow-y-auto px-6 py-6">
+        <div className="min-h-[200px] flex flex-col">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentQuestion.id}
@@ -202,8 +199,8 @@ export default function DiagnosisPage() {
           </AnimatePresence>
         </div>
 
-        {/* Scale Buttons - 고정 위치 */}
-        <div className="flex justify-center gap-3 mt-8">
+        {/* Scale Buttons */}
+        <div className="flex justify-center gap-3 mt-6">
           {[1, 2, 3, 4, 5, 6].map((score) => (
             <div key={score} className="flex flex-col items-center gap-2">
               <motion.button
@@ -229,9 +226,10 @@ export default function DiagnosisPage() {
         </div>
       </div>
 
-      {/* Helper Text */}
-      <div className="px-6 pb-8 text-center">
-        <p className="text-sm text-[var(--color-gray-400)]">
+      {/* Progress Bar - 하단 고정 */}
+      <div className="shrink-0 bg-white px-6 py-3 border-t border-[var(--color-violet-100)]">
+        <ProgressBar current={safeQuestionIndex + 1} total={totalQuestions} />
+        <p className="text-xs text-[var(--color-gray-400)] text-center mt-2">
           점수를 선택하면 자동으로 다음 문항으로 넘어갑니다
         </p>
       </div>
