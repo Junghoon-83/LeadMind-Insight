@@ -171,7 +171,7 @@ export default function DiagnosisPage() {
       </div>
 
       {/* Question Area - 상단 고정 높이 */}
-      <div className="h-[200px] px-6 pt-6 overflow-y-auto">
+      <div className="h-[280px] px-6 pt-6 overflow-y-auto">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentQuestion.id}
