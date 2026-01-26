@@ -25,10 +25,24 @@ export default function DiagnosisPage() {
     nickname,
   } = useAssessmentStore();
 
-  // 콘텐츠 로드 완료 후 스크롤
+  // 스크롤 맨 위로 (여러 시점에서 실행)
   useEffect(() => {
-    if (!loading && topRef.current) {
-      topRef.current.scrollIntoView({ behavior: 'instant', block: 'start' });
+    const scrollToTop = () => {
+      window.scrollTo(0, 0);
+      if (topRef.current) {
+        topRef.current.scrollIntoView();
+      }
+    };
+
+    // 즉시 실행
+    scrollToTop();
+
+    // 로딩 완료 후 실행
+    if (!loading) {
+      scrollToTop();
+      setTimeout(scrollToTop, 50);
+      setTimeout(scrollToTop, 200);
+      setTimeout(scrollToTop, 500);
     }
   }, [loading]);
 
@@ -97,6 +111,7 @@ export default function DiagnosisPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[var(--color-background)]">
+        <div ref={topRef} className="absolute top-0 left-0" />
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-[var(--color-gray-500)]">문항을 불러오는 중...</p>
