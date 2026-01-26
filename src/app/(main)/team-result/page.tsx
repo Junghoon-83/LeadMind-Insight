@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
@@ -68,6 +68,19 @@ export default function TeamResultPage() {
       router.replace('/onboarding');
     }
   }, [nickname, leadershipType, router]);
+
+  // 브라우저 뒤로가기 버튼 처리 - 팀원 입력 페이지로 이동
+  const handlePopState = useCallback(() => {
+    router.replace('/team-input');
+  }, [router]);
+
+  useEffect(() => {
+    // 히스토리 상태 설정 (뒤로가기 감지용)
+    window.history.pushState({ page: 'team-result' }, '');
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [handlePopState]);
 
   const leaderInfo = leadershipType ? leadershipTypes[leadershipType] : null;
 
