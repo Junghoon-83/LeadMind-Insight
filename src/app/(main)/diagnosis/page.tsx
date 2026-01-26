@@ -191,79 +191,76 @@ export default function DiagnosisPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[var(--color-background)]">
+    <div className="h-screen flex flex-col bg-[var(--color-background)] relative">
       {/* Header */}
       <div className="shrink-0 bg-white">
         <Header title="리더십 진단" showBack onBack={handleBack} />
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        {/* Question Area */}
-        <div className="px-6 pt-6">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentQuestion.id}
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -30 }}
-              transition={{ duration: 0.2 }}
-              className="flex flex-col"
-            >
-              {/* Question Number */}
-              <div className="mb-3">
-                <span className="text-sm font-medium text-[var(--color-action)]">
-                  Q{safeQuestionIndex + 1}
-                </span>
+      {/* Question Area */}
+      <div className="px-6 pt-6">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentQuestion.id}
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -30 }}
+            transition={{ duration: 0.2 }}
+            className="flex flex-col"
+          >
+            {/* Question Number */}
+            <div className="mb-3">
+              <span className="text-sm font-medium text-[var(--color-action)]">
+                Q{safeQuestionIndex + 1}
+              </span>
+            </div>
+
+            {/* Question Text */}
+            <Card padding="lg">
+              <p className="text-lg font-medium text-[var(--color-text)] leading-relaxed">
+                {currentQuestion.text}
+              </p>
+            </Card>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Scale Buttons - 화면 60% 지점에 고정 */}
+      <div className="absolute left-0 right-0 top-[60%] px-6">
+        <div key={`buttons-${currentQuestion.id}`} className="flex justify-center gap-3">
+          {[1, 2, 3, 4, 5, 6].map((score) => {
+            const isSelected = currentAnswer === score;
+            return (
+              <div key={score} className="flex flex-col items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleScoreSelect(score)}
+                  className="scale-btn active:scale-95 transition-transform"
+                  style={{
+                    borderColor: isSelected ? 'var(--color-action)' : 'var(--color-violet-200)',
+                    backgroundColor: isSelected ? 'var(--color-action)' : 'var(--color-white)',
+                    color: isSelected ? 'white' : 'var(--color-text)',
+                  }}
+                >
+                  {score}
+                </button>
+                {score === 1 && (
+                  <span className="text-xs text-[var(--color-gray-400)] whitespace-nowrap">전혀 아니다</span>
+                )}
+                {score === 6 && (
+                  <span className="text-xs text-[var(--color-gray-400)] whitespace-nowrap">매우 그렇다</span>
+                )}
+                {score !== 1 && score !== 6 && (
+                  <span className="text-xs invisible">-</span>
+                )}
               </div>
-
-              {/* Question Text */}
-              <Card padding="lg">
-                <p className="text-lg font-medium text-[var(--color-text)] leading-relaxed">
-                  {currentQuestion.text}
-                </p>
-              </Card>
-            </motion.div>
-          </AnimatePresence>
-        </div>
-
-        {/* Scale Buttons - 중앙 배치 */}
-        <div className="flex-1 flex items-center justify-center px-6">
-          <div key={`buttons-${currentQuestion.id}`} className="flex justify-center gap-3">
-            {[1, 2, 3, 4, 5, 6].map((score) => {
-              const isSelected = currentAnswer === score;
-              return (
-                <div key={score} className="flex flex-col items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => handleScoreSelect(score)}
-                    className="scale-btn active:scale-95 transition-transform"
-                    style={{
-                      borderColor: isSelected ? 'var(--color-action)' : 'var(--color-violet-200)',
-                      backgroundColor: isSelected ? 'var(--color-action)' : 'var(--color-white)',
-                      color: isSelected ? 'white' : 'var(--color-text)',
-                    }}
-                  >
-                    {score}
-                  </button>
-                  {score === 1 && (
-                    <span className="text-xs text-[var(--color-gray-400)] whitespace-nowrap">전혀 아니다</span>
-                  )}
-                  {score === 6 && (
-                    <span className="text-xs text-[var(--color-gray-400)] whitespace-nowrap">매우 그렇다</span>
-                  )}
-                  {score !== 1 && score !== 6 && (
-                    <span className="text-xs invisible">-</span>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+            );
+          })}
         </div>
       </div>
 
       {/* Progress Bar - 하단 */}
-      <div className="shrink-0 bg-white px-6 py-3 border-t border-[var(--color-violet-100)]">
+      <div className="absolute bottom-0 left-0 right-0 bg-white px-6 py-3 border-t border-[var(--color-violet-100)]">
         <ProgressBar current={safeQuestionIndex + 1} total={totalQuestions} />
         <p className="text-xs text-[var(--color-gray-400)] text-center mt-2">
           점수를 선택하면 자동으로 다음 문항으로 넘어갑니다
