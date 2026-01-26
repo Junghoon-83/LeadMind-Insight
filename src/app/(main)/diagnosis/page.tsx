@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from '@/components/layout/Header';
@@ -64,6 +64,48 @@ export default function DiagnosisPage() {
       setCurrentQuestionIndex(0);
     }
   }, [questions.length, currentQuestionIndex, setCurrentQuestionIndex]);
+
+  // 브라우저 뒤로가기 처리를 위한 ref
+  const isBackNavigation = useRef(false);
+  const prevQuestionIndex = useRef(currentQuestionIndex);
+
+  // 브라우저 뒤로가기 버튼 처리
+  useEffect(() => {
+    if (loading || questions.length === 0) return;
+
+    const handlePopState = () => {
+      // 현재 스토어의 인덱스 확인
+      const storeIndex = useAssessmentStore.getState().currentQuestionIndex;
+
+      if (storeIndex > 0) {
+        isBackNavigation.current = true;
+        prevQuestion();
+      }
+      // storeIndex가 0이면 브라우저 기본 동작 (이전 페이지로)
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [loading, questions.length, prevQuestion]);
+
+  // 문항 앞으로 이동 시에만 히스토리 추가 (뒤로가기 시에는 추가하지 않음)
+  useEffect(() => {
+    if (loading || questions.length === 0) return;
+
+    // 뒤로가기로 인한 변경이면 히스토리 추가하지 않음
+    if (isBackNavigation.current) {
+      isBackNavigation.current = false;
+      prevQuestionIndex.current = currentQuestionIndex;
+      return;
+    }
+
+    // 앞으로 이동한 경우에만 히스토리 추가
+    if (currentQuestionIndex > prevQuestionIndex.current) {
+      window.history.pushState({ questionIndex: currentQuestionIndex }, '');
+    }
+
+    prevQuestionIndex.current = currentQuestionIndex;
+  }, [currentQuestionIndex, loading, questions.length]);
 
   const currentQuestion = questions[safeQuestionIndex];
   const currentAnswer = currentQuestion ? answers[currentQuestion.id] : undefined;
