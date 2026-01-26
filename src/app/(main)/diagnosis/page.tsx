@@ -208,7 +208,7 @@ export default function DiagnosisPage() {
                 <button
                   type="button"
                   onClick={() => handleScoreSelect(score)}
-                  className="scale-btn"
+                  className="scale-btn active:scale-95 transition-transform"
                   style={{
                     borderColor: isSelected ? 'var(--color-action)' : 'var(--color-violet-200)',
                     backgroundColor: isSelected ? 'var(--color-action)' : 'var(--color-white)',
