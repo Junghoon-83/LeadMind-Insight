@@ -115,21 +115,16 @@ export default function DiagnosisPage() {
   const handleScoreSelect = (score: number) => {
     if (!currentQuestion) return;
 
-    // 이미 선택된 점수를 다시 누르면 다음으로 넘어가지 않음
-    const isSameScore = currentAnswer === score;
-
     setAnswer(currentQuestion.id, score);
 
-    // 다른 점수 선택 시에만 다음 문항으로 이동
-    if (!isSameScore) {
-      setTimeout(() => {
-        if (safeQuestionIndex < totalQuestions - 1) {
-          nextQuestion();
-        } else {
-          router.push('/concerns');
-        }
-      }, 300);
-    }
+    // 자동으로 다음 문항으로 이동
+    setTimeout(() => {
+      if (safeQuestionIndex < totalQuestions - 1) {
+        nextQuestion();
+      } else {
+        router.push('/concerns');
+      }
+    }, 300);
   };
 
   const handleBack = () => {
