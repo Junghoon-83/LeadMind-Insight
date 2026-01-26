@@ -125,58 +125,59 @@ export default function DiagnosisPage() {
 
       {/* Question */}
       <div className="flex-1 flex flex-col px-6 py-8">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentQuestion.id}
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -30 }}
-            transition={{ duration: 0.2 }}
-            className="flex-1 flex flex-col"
-          >
-            {/* Question Number */}
-            <div className="mb-4">
-              <span className="text-sm font-medium text-[var(--color-action)]">
-                Q{safeQuestionIndex + 1}
-              </span>
-            </div>
-
-            {/* Question Text */}
-            <Card padding="lg" className="mb-8">
-              <p className="text-lg font-medium text-[var(--color-text)] leading-relaxed">
-                {currentQuestion.text}
-              </p>
-            </Card>
-
-            {/* Scale Buttons */}
-            <div className="flex-1 flex flex-col justify-center">
-              <div className="flex justify-center gap-3">
-                {[1, 2, 3, 4, 5, 6].map((score) => (
-                  <div key={score} className="flex flex-col items-center gap-2">
-                    <motion.button
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => handleScoreSelect(score)}
-                      className={`scale-btn ${
-                        currentAnswer === score ? 'selected' : ''
-                      }`}
-                    >
-                      {score}
-                    </motion.button>
-                    {score === 1 && (
-                      <span className="text-xs text-[var(--color-gray-400)] whitespace-nowrap">전혀 아니다</span>
-                    )}
-                    {score === 6 && (
-                      <span className="text-xs text-[var(--color-gray-400)] whitespace-nowrap">매우 그렇다</span>
-                    )}
-                    {score !== 1 && score !== 6 && (
-                      <span className="text-xs invisible">-</span>
-                    )}
-                  </div>
-                ))}
+        {/* Question Area - 고정 높이 */}
+        <div className="h-[200px] flex flex-col">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentQuestion.id}
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -30 }}
+              transition={{ duration: 0.2 }}
+              className="flex flex-col"
+            >
+              {/* Question Number */}
+              <div className="mb-4">
+                <span className="text-sm font-medium text-[var(--color-action)]">
+                  Q{safeQuestionIndex + 1}
+                </span>
               </div>
+
+              {/* Question Text */}
+              <Card padding="lg">
+                <p className="text-lg font-medium text-[var(--color-text)] leading-relaxed">
+                  {currentQuestion.text}
+                </p>
+              </Card>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
+        {/* Scale Buttons - 고정 위치 */}
+        <div className="flex justify-center gap-3 mt-8">
+          {[1, 2, 3, 4, 5, 6].map((score) => (
+            <div key={score} className="flex flex-col items-center gap-2">
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                onClick={() => handleScoreSelect(score)}
+                className={`scale-btn ${
+                  currentAnswer === score ? 'selected' : ''
+                }`}
+              >
+                {score}
+              </motion.button>
+              {score === 1 && (
+                <span className="text-xs text-[var(--color-gray-400)] whitespace-nowrap">전혀 아니다</span>
+              )}
+              {score === 6 && (
+                <span className="text-xs text-[var(--color-gray-400)] whitespace-nowrap">매우 그렇다</span>
+              )}
+              {score !== 1 && score !== 6 && (
+                <span className="text-xs invisible">-</span>
+              )}
             </div>
-          </motion.div>
-        </AnimatePresence>
+          ))}
+        </div>
       </div>
 
       {/* Helper Text */}
