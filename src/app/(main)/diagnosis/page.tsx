@@ -164,7 +164,7 @@ export default function DiagnosisPage() {
   }
 
   return (
-    <div className="h-[100dvh] flex flex-col bg-[var(--color-background)] overflow-hidden">
+    <div className="fixed inset-0 flex flex-col bg-[var(--color-background)]">
       {/* Header - 상단 고정 */}
       <div className="shrink-0 bg-white">
         <Header title="리더십 진단" showBack onBack={handleBack} />
@@ -173,7 +173,7 @@ export default function DiagnosisPage() {
       {/* Question & Buttons - 중앙 배치 */}
       <div className="flex-1 flex flex-col items-center justify-center px-6">
         {/* Question Area - 고정 높이로 점수 버튼 위치 유지 */}
-        <div className="w-full h-[180px] flex flex-col justify-end mb-6">
+        <div className="w-full h-[220px] flex flex-col justify-end mb-10">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentQuestion.id}
@@ -228,7 +228,7 @@ export default function DiagnosisPage() {
       </div>
 
       {/* Progress Bar - 하단 고정 */}
-      <div className="shrink-0 bg-white px-6 py-2 border-t border-[var(--color-violet-100)]">
+      <div className="shrink-0 bg-white px-6 py-2">
         <ProgressBar current={safeQuestionIndex + 1} total={totalQuestions} />
       </div>
     </div>
