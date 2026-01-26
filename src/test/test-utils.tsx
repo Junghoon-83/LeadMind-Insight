@@ -224,11 +224,11 @@ export async function advanceTimersAndFlush(ms: number) {
  */
 export const testEnv = {
   setNodeEnv(env: string) {
-    process.env.NODE_ENV = env;
+    (process.env as Record<string, string>).NODE_ENV = env;
   },
 
   resetNodeEnv() {
-    process.env.NODE_ENV = 'test';
+    (process.env as Record<string, string>).NODE_ENV = 'test';
   },
 
   setEnvVar(key: string, value: string) {
