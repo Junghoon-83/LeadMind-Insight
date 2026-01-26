@@ -199,29 +199,36 @@ export default function DiagnosisPage() {
       </div>
 
       {/* Scale Buttons - 화면 2/3 지점에 고정 */}
-      <div className="absolute left-0 right-0 top-[60%] px-6">
+      <div key={`buttons-${currentQuestion.id}`} className="absolute left-0 right-0 top-[60%] px-6">
         <div className="flex justify-center gap-3">
-          {[1, 2, 3, 4, 5, 6].map((score) => (
-            <div key={`${currentQuestion.id}-${score}`} className="flex flex-col items-center gap-2">
-              <button
-                onClick={() => handleScoreSelect(score)}
-                className={`scale-btn ${
-                  currentAnswer === score ? 'selected' : ''
-                }`}
-              >
-                {score}
-              </button>
-              {score === 1 && (
-                <span className="text-xs text-[var(--color-gray-400)] whitespace-nowrap">전혀 아니다</span>
-              )}
-              {score === 6 && (
-                <span className="text-xs text-[var(--color-gray-400)] whitespace-nowrap">매우 그렇다</span>
-              )}
-              {score !== 1 && score !== 6 && (
-                <span className="text-xs invisible">-</span>
-              )}
-            </div>
-          ))}
+          {[1, 2, 3, 4, 5, 6].map((score) => {
+            const isSelected = currentAnswer === score;
+            return (
+              <div key={score} className="flex flex-col items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleScoreSelect(score)}
+                  className="scale-btn"
+                  style={{
+                    borderColor: isSelected ? 'var(--color-action)' : 'var(--color-violet-200)',
+                    backgroundColor: isSelected ? 'var(--color-action)' : 'var(--color-white)',
+                    color: isSelected ? 'white' : 'var(--color-text)',
+                  }}
+                >
+                  {score}
+                </button>
+                {score === 1 && (
+                  <span className="text-xs text-[var(--color-gray-400)] whitespace-nowrap">전혀 아니다</span>
+                )}
+                {score === 6 && (
+                  <span className="text-xs text-[var(--color-gray-400)] whitespace-nowrap">매우 그렇다</span>
+                )}
+                {score !== 1 && score !== 6 && (
+                  <span className="text-xs invisible">-</span>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 
