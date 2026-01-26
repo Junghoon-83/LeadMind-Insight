@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { ChevronDown, ChevronUp, Users, Lightbulb, MessageCircle, Target, Search } from 'lucide-react';
+import { ChevronDown, ChevronUp, Users, Lightbulb, MessageCircle, Target, Search, RotateCcw } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import { Button, Card } from '@/components/ui';
 import { useAssessmentStore } from '@/store/useAssessmentStore';
@@ -30,7 +30,7 @@ function CategoryBadge({ category }: { category: ConcernCategory }) {
 
 export default function ResultPage() {
   const router = useRouter();
-  const { nickname, scores, leadershipType, selectedConcerns } = useAssessmentStore();
+  const { nickname, scores, leadershipType, selectedConcerns, reset } = useAssessmentStore();
   const [expandedAction, setExpandedAction] = useState<number | null>(null);
   const [leadershipTypes, setLeadershipTypes] = useState<Record<string, LeadershipTypeInfo>>({});
   const [solutions, setSolutions] = useState<Record<string, SolutionData>>({});
@@ -89,6 +89,11 @@ export default function ResultPage() {
 
   const handleTeamInput = () => {
     router.push('/team-input');
+  };
+
+  const handleStartOver = () => {
+    reset();
+    router.push('/onboarding');
   };
 
   if (loading) {
@@ -425,17 +430,24 @@ export default function ResultPage() {
           </motion.div>
         )}
 
-        {/* CTA Button */}
+        {/* CTA Buttons */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="pt-4 pb-8"
+          className="pt-4 pb-8 space-y-3"
         >
           <Button fullWidth onClick={handleTeamInput}>
             <Users className="w-5 h-5 mr-2" />
             팀원 이해하기
           </Button>
+          <button
+            onClick={handleStartOver}
+            className="w-full py-3 px-4 rounded-xl border-2 border-[var(--color-violet-200)] text-[var(--color-gray-600)] font-medium flex items-center justify-center gap-2 hover:bg-[var(--color-violet-50)] transition-colors"
+          >
+            <RotateCcw className="w-5 h-5" />
+            처음부터 다시하기
+          </button>
         </motion.div>
       </div>
     </div>

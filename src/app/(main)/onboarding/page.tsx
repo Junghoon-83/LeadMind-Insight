@@ -1,22 +1,57 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, ImageIcon } from 'lucide-react';
+import { ChevronRight, ImageIcon, RotateCcw, Play, Eye } from 'lucide-react';
 import { Button, Input } from '@/components/ui';
 import { onboardingSlides } from '@/data/onboarding';
 import { useAssessmentStore } from '@/store/useAssessmentStore';
 
 type Step = 'carousel' | 'nickname' | 'intro';
+type PreviousDataType = 'completed' | 'in-progress' | null;
 
 export default function OnboardingPage() {
   const router = useRouter();
   const [step, setStep] = useState<Step>('carousel');
   const [currentSlide, setCurrentSlide] = useState(0);
   const [nicknameInput, setNicknameInput] = useState('');
-  const { setNickname, nickname } = useAssessmentStore();
+  const [showPreviousDataModal, setShowPreviousDataModal] = useState(false);
+  const [previousDataType, setPreviousDataType] = useState<PreviousDataType>(null);
+  const { setNickname, nickname, leadershipType, answers, reset } = useAssessmentStore();
+
+  // 기존 데이터 확인
+  useEffect(() => {
+    const hasAnswers = Object.keys(answers).length > 0;
+    const hasResult = !!leadershipType;
+
+    if (hasResult) {
+      setPreviousDataType('completed');
+      setShowPreviousDataModal(true);
+    } else if (hasAnswers) {
+      setPreviousDataType('in-progress');
+      setShowPreviousDataModal(true);
+    }
+  }, [answers, leadershipType]);
+
+  // 이전 결과 보기
+  const handleViewPreviousResult = () => {
+    router.push('/result');
+  };
+
+  // 이어서 진행
+  const handleContinue = () => {
+    setShowPreviousDataModal(false);
+    router.push('/diagnosis');
+  };
+
+  // 새로 시작
+  const handleStartFresh = () => {
+    reset();
+    setShowPreviousDataModal(false);
+    setPreviousDataType(null);
+  };
 
   const handleNextSlide = () => {
     if (currentSlide < onboardingSlides.length - 1) {
@@ -223,6 +258,80 @@ export default function OnboardingPage() {
             <Button fullWidth onClick={handleStart}>
               진단 시작하기
             </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 이전 데이터 존재 모달 */}
+      <AnimatePresence>
+        {showPreviousDataModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-6"
+            onClick={() => setShowPreviousDataModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white w-full max-w-sm rounded-2xl p-6 shadow-xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {previousDataType === 'completed' ? (
+                <>
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-violet-100 to-violet-200 flex items-center justify-center">
+                    <span className="text-3xl">📊</span>
+                  </div>
+                  <h3 className="text-xl font-bold text-center text-[var(--color-text)] mb-2">
+                    이전 진단 결과가 있습니다
+                  </h3>
+                  <p className="text-center text-[var(--color-gray-600)] text-sm mb-6">
+                    {nickname}님의 진단 결과를 확인하거나<br />
+                    새로운 진단을 시작할 수 있습니다.
+                  </p>
+                  <div className="space-y-3">
+                    <Button fullWidth onClick={handleViewPreviousResult}>
+                      <Eye className="w-5 h-5 mr-2" />
+                      이전 결과 보기
+                    </Button>
+                    <button
+                      onClick={handleStartFresh}
+                      className="w-full py-3 px-4 rounded-xl border-2 border-[var(--color-violet-200)] text-[var(--color-gray-600)] font-medium flex items-center justify-center gap-2 hover:bg-[var(--color-violet-50)] transition-colors"
+                    >
+                      <RotateCcw className="w-5 h-5" />
+                      새로 시작하기
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center">
+                    <span className="text-3xl">📝</span>
+                  </div>
+                  <h3 className="text-xl font-bold text-center text-[var(--color-text)] mb-2">
+                    진행 중인 진단이 있습니다
+                  </h3>
+                  <p className="text-center text-[var(--color-gray-600)] text-sm mb-6">
+                    이전에 진행하던 진단을 이어서 할 수 있습니다.
+                  </p>
+                  <div className="space-y-3">
+                    <Button fullWidth onClick={handleContinue}>
+                      <Play className="w-5 h-5 mr-2" />
+                      이어서 진행하기
+                    </Button>
+                    <button
+                      onClick={handleStartFresh}
+                      className="w-full py-3 px-4 rounded-xl border-2 border-[var(--color-violet-200)] text-[var(--color-gray-600)] font-medium flex items-center justify-center gap-2 hover:bg-[var(--color-violet-50)] transition-colors"
+                    >
+                      <RotateCcw className="w-5 h-5" />
+                      새로 시작하기
+                    </button>
+                  </div>
+                </>
+              )}
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
