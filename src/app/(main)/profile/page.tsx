@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { ChevronRight, ChevronDown, Check } from 'lucide-react';
@@ -110,6 +110,19 @@ export default function ProfilePage() {
       router.replace('/onboarding');
     }
   }, [nickname, router]);
+
+  // 브라우저 뒤로가기 버튼 처리 - 고민 선택 페이지로 이동
+  const handlePopState = useCallback(() => {
+    router.replace('/concerns');
+  }, [router]);
+
+  useEffect(() => {
+    // 히스토리 상태 설정 (뒤로가기 감지용)
+    window.history.pushState({ page: 'profile' }, '');
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [handlePopState]);
 
   const validateEmail = (email: string) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
