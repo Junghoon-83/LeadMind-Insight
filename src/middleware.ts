@@ -2,10 +2,19 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import * as jose from 'jose';
 
-// JWT Secret (Edge Runtime에서 TextEncoder 사용)
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'leadmind-jwt-secret-change-in-production'
-);
+// JWT Secret 설정
+const DEFAULT_JWT_SECRET = 'leadmind-jwt-secret-change-in-production';
+
+function getJwtSecret(): Uint8Array {
+  const jwtSecretValue = process.env.JWT_SECRET || DEFAULT_JWT_SECRET;
+
+  // 프로덕션 환경에서 기본 JWT_SECRET 사용 방지 (런타임 체크)
+  if (process.env.NODE_ENV === 'production' && jwtSecretValue === DEFAULT_JWT_SECRET) {
+    console.error('🚨 SECURITY ERROR: JWT_SECRET must be set in production');
+  }
+
+  return new TextEncoder().encode(jwtSecretValue);
+}
 
 /**
  * Authorization 헤더에서 토큰 추출
@@ -22,7 +31,7 @@ function extractToken(authHeader: string | null): string | null {
  */
 async function verifyToken(token: string): Promise<{ role: string } | null> {
   try {
-    const { payload } = await jose.jwtVerify(token, JWT_SECRET);
+    const { payload } = await jose.jwtVerify(token, getJwtSecret());
     return payload as { role: string };
   } catch {
     return null;

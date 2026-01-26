@@ -42,12 +42,8 @@ const nextConfig: NextConfig = {
 
   // 이미지 최적화 설정
   images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "**",
-      },
-    ],
+    // 모든 이미지가 로컬(/public)이므로 외부 호스트 불필요
+    remotePatterns: [],
     formats: ["image/avif", "image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200],
     imageSizes: [16, 32, 48, 64, 96, 128, 256],
