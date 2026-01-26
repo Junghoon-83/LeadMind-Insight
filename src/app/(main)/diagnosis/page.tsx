@@ -1,12 +1,15 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from '@/components/layout/Header';
 import { ProgressBar, Card } from '@/components/ui';
 import { useAssessmentStore } from '@/store/useAssessmentStore';
 import type { Question } from '@/types';
+
+// SSR에서 useLayoutEffect 경고 방지
+const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
 export default function DiagnosisPage() {
   const router = useRouter();
@@ -24,9 +27,15 @@ export default function DiagnosisPage() {
     nickname,
   } = useAssessmentStore();
 
-  // 페이지 로드 시 스크롤 맨 위로 (모바일 대응)
+  // 페이지 로드 시 스크롤 맨 위로 (동기적 실행)
+  useIsomorphicLayoutEffect(() => {
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, []);
+
+  // 모바일 브라우저 스크롤 복원 대응
   useEffect(() => {
-    // 브라우저 자동 스크롤 복원 비활성화
     if ('scrollRestoration' in history) {
       history.scrollRestoration = 'manual';
     }
@@ -37,19 +46,21 @@ export default function DiagnosisPage() {
       document.body.scrollTop = 0;
     };
 
-    // 즉시 실행
-    scrollToTop();
-    // 렌더링 후 재실행
-    requestAnimationFrame(scrollToTop);
-    // 추가 딜레이 후 재실행 (모바일 대응)
-    const timer1 = setTimeout(scrollToTop, 50);
-    const timer2 = setTimeout(scrollToTop, 150);
-    const timer3 = setTimeout(scrollToTop, 300);
+    // pageshow 이벤트 (모바일 Safari bfcache 대응)
+    const handlePageShow = (e: PageTransitionEvent) => {
+      if (e.persisted) {
+        scrollToTop();
+      }
+    };
+
+    window.addEventListener('pageshow', handlePageShow);
+
+    // 딜레이 후 스크롤 (모바일 대응)
+    const timer = setTimeout(scrollToTop, 100);
 
     return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-      clearTimeout(timer3);
+      window.removeEventListener('pageshow', handlePageShow);
+      clearTimeout(timer);
     };
   }, []);
 
