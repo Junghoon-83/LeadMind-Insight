@@ -126,7 +126,7 @@ export default function DiagnosisPage() {
       {/* Question */}
       <div className="flex-1 flex flex-col px-6 py-8">
         {/* Question Area - 고정 높이 */}
-        <div className="h-[200px] flex flex-col">
+        <div className="h-[280px] flex flex-col">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentQuestion.id}
