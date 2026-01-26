@@ -19,10 +19,12 @@ export default function OnboardingPage() {
   const [nicknameInput, setNicknameInput] = useState('');
   const [showPreviousDataModal, setShowPreviousDataModal] = useState(false);
   const [previousDataType, setPreviousDataType] = useState<PreviousDataType>(null);
-  const { setNickname, nickname, leadershipType, answers, reset } = useAssessmentStore();
+  const { setNickname, nickname, leadershipType, answers, reset, _hasHydrated } = useAssessmentStore();
 
-  // 기존 데이터 확인
+  // 기존 데이터 확인 (hydration 완료 후)
   useEffect(() => {
+    if (!_hasHydrated) return;
+
     const hasAnswers = Object.keys(answers).length > 0;
     const hasResult = !!leadershipType;
 
@@ -33,7 +35,7 @@ export default function OnboardingPage() {
       setPreviousDataType('in-progress');
       setShowPreviousDataModal(true);
     }
-  }, [answers, leadershipType]);
+  }, [_hasHydrated, answers, leadershipType]);
 
   // 이전 결과 보기
   const handleViewPreviousResult = () => {

@@ -9,6 +9,10 @@ interface TeamMemberInput {
 }
 
 interface AssessmentState {
+  // Hydration
+  _hasHydrated: boolean;
+  setHasHydrated: (state: boolean) => void;
+
   // Onboarding
   nickname: string;
   setNickname: (nickname: string) => void;
@@ -60,6 +64,7 @@ interface AssessmentState {
 }
 
 const initialState = {
+  _hasHydrated: false,
   nickname: '',
   currentQuestionIndex: 0,
   answers: {},
@@ -79,6 +84,8 @@ export const useAssessmentStore = create<AssessmentState>()(
   persist(
     (set) => ({
       ...initialState,
+
+      setHasHydrated: (state) => set({ _hasHydrated: state }),
 
       setNickname: (nickname) => set({ nickname }),
 
@@ -159,6 +166,9 @@ export const useAssessmentStore = create<AssessmentState>()(
         teamMembers: state.teamMembers,
         assessmentId: state.assessmentId,
       }),
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
     }
   )
 );
