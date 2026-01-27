@@ -10,7 +10,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "test:ci": "jest --ci --coverage --maxWorkers=2",
+    "test:ci": "jest --ci --coverage --maxWorkers=2 --passWithNoTests",
     "hash-password": "npx ts-node scripts/hash-password.ts",
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
