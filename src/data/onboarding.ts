@@ -3,7 +3,7 @@ import type { OnboardingSlide } from '@/types';
 export const onboardingSlides: OnboardingSlide[] = [
   {
     id: 1,
-    title: '리드마인드케어',
+    title: '리드 마인드 케어',
     description: '성과를 만드는 리더십을 넘어\n팀을 연결하는 링커십으로',
     images: [
       '/images/Slide1_1.png',
