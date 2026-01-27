@@ -50,7 +50,7 @@ jobs:
 
       - name: Archive test results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-results-${{ matrix.node-version }}
           path: |
@@ -93,7 +93,7 @@ jobs:
           ADMIN_PASSWORD_HASH: dummy-hash
 
       - name: Archive build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-output
           path: .next/
