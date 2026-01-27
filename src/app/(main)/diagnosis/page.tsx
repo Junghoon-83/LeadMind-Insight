@@ -191,14 +191,16 @@ export default function DiagnosisPage() {
   }
 
   return (
-    <div className="h-screen flex flex-col bg-[var(--color-background)] relative">
-      {/* Header */}
-      <div className="shrink-0 bg-white">
+    <div className="h-screen flex flex-col bg-[var(--color-background)] overflow-hidden">
+      {/* Header - 상단 고정 */}
+      <div className="shrink-0 bg-white z-10">
         <Header title="리더십 진단" showBack onBack={handleBack} />
       </div>
 
-      {/* Question Area */}
-      <div className="px-6 pt-6">
+      {/* Content Area - 상대 위치 기준 */}
+      <div className="flex-1 relative">
+        {/* Question Area */}
+        <div className="px-6 pt-6">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentQuestion.id}
@@ -225,46 +227,47 @@ export default function DiagnosisPage() {
         </AnimatePresence>
       </div>
 
-      {/* Scale Buttons - 화면 60% 지점에 고정 */}
-      <div className="absolute left-0 right-0 top-[60%] px-6">
-        <div key={`buttons-${currentQuestion.id}`} className="flex justify-center gap-3">
-          {[1, 2, 3, 4, 5, 6].map((score) => {
-            const isSelected = currentAnswer === score;
-            return (
-              <div key={score} className="flex flex-col items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => handleScoreSelect(score)}
-                  className="scale-btn active:scale-95 transition-transform"
-                  style={{
-                    borderColor: isSelected ? 'var(--color-action)' : 'var(--color-violet-200)',
-                    backgroundColor: isSelected ? 'var(--color-action)' : 'var(--color-white)',
-                    color: isSelected ? 'white' : 'var(--color-text)',
-                  }}
-                >
-                  {score}
-                </button>
-                {score === 1 && (
-                  <span className="text-xs text-[var(--color-gray-400)] whitespace-nowrap">전혀 아니다</span>
-                )}
-                {score === 6 && (
-                  <span className="text-xs text-[var(--color-gray-400)] whitespace-nowrap">매우 그렇다</span>
-                )}
-                {score !== 1 && score !== 6 && (
-                  <span className="text-xs invisible">-</span>
-                )}
-              </div>
-            );
-          })}
+        {/* Scale Buttons - 화면 50% 지점에 고정 (헤더 제외 영역 기준) */}
+        <div className="absolute left-0 right-0 top-[50%] px-6">
+          <div key={`buttons-${currentQuestion.id}`} className="flex justify-center gap-3">
+            {[1, 2, 3, 4, 5, 6].map((score) => {
+              const isSelected = currentAnswer === score;
+              return (
+                <div key={score} className="flex flex-col items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleScoreSelect(score)}
+                    className="scale-btn active:scale-95 transition-transform"
+                    style={{
+                      borderColor: isSelected ? 'var(--color-action)' : 'var(--color-violet-200)',
+                      backgroundColor: isSelected ? 'var(--color-action)' : 'var(--color-white)',
+                      color: isSelected ? 'white' : 'var(--color-text)',
+                    }}
+                  >
+                    {score}
+                  </button>
+                  {score === 1 && (
+                    <span className="text-xs text-[var(--color-gray-400)] whitespace-nowrap">전혀 아니다</span>
+                  )}
+                  {score === 6 && (
+                    <span className="text-xs text-[var(--color-gray-400)] whitespace-nowrap">매우 그렇다</span>
+                  )}
+                  {score !== 1 && score !== 6 && (
+                    <span className="text-xs invisible">-</span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
-      </div>
 
-      {/* Progress Bar - 하단 */}
-      <div className="absolute bottom-0 left-0 right-0 bg-white px-6 py-3 border-t border-[var(--color-violet-100)]">
-        <ProgressBar current={safeQuestionIndex + 1} total={totalQuestions} />
-        <p className="text-xs text-[var(--color-gray-400)] text-center mt-2">
-          점수를 선택하면 자동으로 다음 문항으로 넘어갑니다
-        </p>
+        {/* Progress Bar - 하단 고정 */}
+        <div className="absolute bottom-0 left-0 right-0 bg-white px-6 py-3 border-t border-[var(--color-violet-100)]">
+          <ProgressBar current={safeQuestionIndex + 1} total={totalQuestions} />
+          <p className="text-xs text-[var(--color-gray-400)] text-center mt-2">
+            점수를 선택하면 자동으로 다음 문항으로 넘어갑니다
+          </p>
+        </div>
       </div>
     </div>
   );
