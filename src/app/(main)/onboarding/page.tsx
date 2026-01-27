@@ -160,7 +160,7 @@ export default function OnboardingPage() {
                 >
                   {/* Large Rounded Image */}
                   <div
-                    className="w-[280px] h-[280px] rounded-[2.5rem] bg-gradient-to-br from-violet-100 via-purple-50 to-indigo-100 flex items-center justify-center overflow-hidden relative"
+                    className="w-[280px] h-[280px] rounded-[28px] bg-gradient-to-br from-violet-100 via-purple-50 to-indigo-100 flex items-center justify-center overflow-hidden relative"
                     style={{ boxShadow: '0 20px 40px -12px rgba(139, 92, 246, 0.25)' }}
                   >
                     {/* Subtle pattern overlay */}
