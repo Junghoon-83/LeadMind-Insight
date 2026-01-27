@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, type PanInfo } from 'framer-motion';
 import { ChevronRight, ImageIcon, RotateCcw, Play, Eye } from 'lucide-react';
 import { Button, Input } from '@/components/ui';
 import { onboardingSlides } from '@/data/onboarding';
@@ -72,6 +72,24 @@ export default function OnboardingPage() {
     }
   };
 
+  const handlePrevSlide = () => {
+    if (currentSlide > 0) {
+      setCurrentSlide(currentSlide - 1);
+    }
+  };
+
+  // 스와이프 핸들러
+  const handleDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    const threshold = 50; // 최소 스와이프 거리
+    if (info.offset.x < -threshold) {
+      // 왼쪽으로 스와이프 -> 다음 슬라이드
+      handleNextSlide();
+    } else if (info.offset.x > threshold) {
+      // 오른쪽으로 스와이프 -> 이전 슬라이드
+      handlePrevSlide();
+    }
+  };
+
   const handleNicknameSubmit = () => {
     if (nicknameInput.trim()) {
       setNickname(nicknameInput.trim());
@@ -111,7 +129,11 @@ export default function OnboardingPage() {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -50 }}
                   transition={{ duration: 0.3 }}
-                  className="text-center w-full flex flex-col items-center"
+                  drag="x"
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={0.2}
+                  onDragEnd={handleDragEnd}
+                  className="text-center w-full flex flex-col items-center cursor-grab active:cursor-grabbing"
                 >
                   {/* Large Rounded Image */}
                   <div
