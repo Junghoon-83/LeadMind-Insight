@@ -173,7 +173,7 @@ export default function OnboardingPage() {
                           return (
                             <div
                               key={idx}
-                              className="absolute inset-0 z-10 transition-all duration-[2000ms] ease-out"
+                              className="absolute inset-0 z-10 transition-all duration-[2000ms] ease-out origin-center"
                               style={{
                                 opacity: isActive ? 1 : 0,
                                 transform: isActive ? 'scale(1.08)' : 'scale(1)',
@@ -184,7 +184,7 @@ export default function OnboardingPage() {
                                 alt={`${onboardingSlides[currentSlide].title} ${idx + 1}`}
                                 width={280}
                                 height={280}
-                                className="w-full h-full object-cover"
+                                className="w-full h-full object-cover object-center"
                                 priority={idx === 0}
                               />
                             </div>
