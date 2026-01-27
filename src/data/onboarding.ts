@@ -3,8 +3,8 @@ import type { OnboardingSlide } from '@/types';
 export const onboardingSlides: OnboardingSlide[] = [
   {
     id: 1,
-    title: '데이터 기반 리더십 진단',
-    description: '상담심리 전문가가 검증한 데이터 기반\n리더십×팔로워십 상호작용 진단',
+    title: '리드마인드케어',
+    description: '성과를 만드는 리더십을 넘어\n팀을 연결하는 링커십으로',
     images: [
       '/images/Slide1_1.png',
       '/images/Slide1_2.png',
