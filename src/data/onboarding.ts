@@ -11,7 +11,11 @@ export const onboardingSlides: OnboardingSlide[] = [
     id: 2,
     title: '새로운 시대, 링커십',
     description: '성과를 만드는 리더십을 넘어\n팀을 연결하는 링커십으로',
-    image: '/images/onboarding-2.png',
+    images: [
+      '/images/Slide_2_1.png',
+      '/images/Slide_2_2.png',
+      '/images/Slide_2_3.png',
+    ],
   },
   {
     id: 3,

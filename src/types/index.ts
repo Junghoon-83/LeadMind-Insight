@@ -107,6 +107,7 @@ export interface OnboardingSlide {
   title: string;
   description: string;
   image?: string;
+  images?: string[]; // 여러 이미지 순환용
 }
 
 // Solution

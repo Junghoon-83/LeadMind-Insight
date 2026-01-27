@@ -17,6 +17,7 @@ export default function OnboardingPage() {
   const router = useRouter();
   const [step, setStep] = useState<Step>('carousel');
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0); // 다중 이미지 인덱스
   const [nicknameInput, setNicknameInput] = useState('');
   const [showPreviousDataModal, setShowPreviousDataModal] = useState(false);
   const [previousDataType, setPreviousDataType] = useState<PreviousDataType>(null);
@@ -28,6 +29,28 @@ export default function OnboardingPage() {
     setIsHydrated(true);
     router.prefetch('/diagnosis');
   }, [router]);
+
+  // 다중 이미지 자동 전환 (2.5초 간격)
+  useEffect(() => {
+    const currentSlideData = onboardingSlides[currentSlide];
+    if (!currentSlideData.images || currentSlideData.images.length <= 1) {
+      setCurrentImageIndex(0);
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) =>
+        (prev + 1) % currentSlideData.images!.length
+      );
+    }, 2500);
+
+    return () => clearInterval(interval);
+  }, [currentSlide]);
+
+  // 슬라이드 변경 시 이미지 인덱스 리셋
+  useEffect(() => {
+    setCurrentImageIndex(0);
+  }, [currentSlide]);
 
   // 기존 데이터 확인 (hydration 완료 후)
   useEffect(() => {
@@ -142,7 +165,27 @@ export default function OnboardingPage() {
                   >
                     {/* Subtle pattern overlay */}
                     <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_50%_50%,rgba(139,92,246,0.1)_1px,transparent_1px)] bg-[length:20px_20px]" />
-                    {onboardingSlides[currentSlide].image ? (
+                    {onboardingSlides[currentSlide].images ? (
+                      // 다중 이미지 - 페이드 애니메이션
+                      <AnimatePresence mode="wait">
+                        <motion.div
+                          key={currentImageIndex}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.8, ease: 'easeInOut' }}
+                          className="absolute inset-0 z-10"
+                        >
+                          <Image
+                            src={onboardingSlides[currentSlide].images[currentImageIndex]}
+                            alt={`${onboardingSlides[currentSlide].title} ${currentImageIndex + 1}`}
+                            width={280}
+                            height={280}
+                            className="w-full h-full object-cover"
+                          />
+                        </motion.div>
+                      </AnimatePresence>
+                    ) : onboardingSlides[currentSlide].image ? (
                       <Image
                         src={onboardingSlides[currentSlide].image!}
                         alt={onboardingSlides[currentSlide].title}
