@@ -15,11 +15,7 @@ export const onboardingSlides: OnboardingSlide[] = [
     id: 2,
     title: '데이터 기반 리더십 진단',
     description: '상담심리 전문가가 검증한 데이터 기반\n리더십×팔로워십 상호작용 진단',
-    images: [
-      '/images/Slide_2_1.png',
-      '/images/Slide_2_2.png',
-      '/images/Slide_2_3.png',
-    ],
+    image: '/images/onboarding-2.png',
   },
   {
     id: 3,
