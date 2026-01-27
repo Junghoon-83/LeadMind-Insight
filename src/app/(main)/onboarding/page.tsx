@@ -30,7 +30,7 @@ export default function OnboardingPage() {
     router.prefetch('/diagnosis');
   }, [router]);
 
-  // 다중 이미지 자동 전환 (2.5초 간격)
+  // 다중 이미지 자동 전환 (3초 간격, 부드러운 전환)
   useEffect(() => {
     const currentSlideData = onboardingSlides[currentSlide];
     if (!currentSlideData.images || currentSlideData.images.length <= 1) {
@@ -42,7 +42,7 @@ export default function OnboardingPage() {
       setCurrentImageIndex((prev) =>
         (prev + 1) % currentSlideData.images!.length
       );
-    }, 2500);
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [currentSlide]);
@@ -166,14 +166,17 @@ export default function OnboardingPage() {
                     {/* Subtle pattern overlay */}
                     <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_50%_50%,rgba(139,92,246,0.1)_1px,transparent_1px)] bg-[length:20px_20px]" />
                     {onboardingSlides[currentSlide].images ? (
-                      // 다중 이미지 - 페이드 애니메이션
-                      <AnimatePresence mode="wait">
+                      // 다중 이미지 - 부드러운 크로스페이드 애니메이션
+                      <AnimatePresence initial={false}>
                         <motion.div
                           key={currentImageIndex}
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
+                          initial={{ opacity: 0, scale: 1.05 }}
+                          animate={{ opacity: 1, scale: 1 }}
                           exit={{ opacity: 0 }}
-                          transition={{ duration: 0.8, ease: 'easeInOut' }}
+                          transition={{
+                            duration: 1.2,
+                            ease: [0.4, 0, 0.2, 1] // cubic-bezier for smooth feel
+                          }}
                           className="absolute inset-0 z-10"
                         >
                           <Image
