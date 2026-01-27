@@ -191,7 +191,7 @@ export default function DiagnosisPage() {
   }
 
   return (
-    <>
+    <div className="min-h-screen bg-[var(--color-background)]">
       {/* Header - 뷰포트 상단 고정 */}
       <div className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white z-50">
         <Header title="리더십 진단" showBack onBack={handleBack} />
@@ -268,6 +268,6 @@ export default function DiagnosisPage() {
           점수를 선택하면 자동으로 다음 문항으로 넘어갑니다
         </p>
       </div>
-    </>
+    </div>
   );
 }
