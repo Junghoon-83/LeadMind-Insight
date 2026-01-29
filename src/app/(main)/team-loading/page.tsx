@@ -17,72 +17,73 @@ export default function TeamLoadingPage() {
   }, [router]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-[var(--color-violet-50)] via-white to-white px-6">
-      {/* Animated Circle */}
+    <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-[var(--color-background)] to-white px-6">
       <motion.div
-        className="relative w-36 h-36 mb-10"
-        initial={{ opacity: 0, scale: 0.8 }}
+        initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
-      >
-        {/* Glow effect */}
-        <motion.div
-          className="absolute inset-0 rounded-full bg-gradient-to-br from-violet-400 to-purple-500 blur-xl opacity-30"
-          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-        />
-
-        {/* Outer ring */}
-        <motion.div
-          className="absolute inset-0 rounded-full border-[3px] border-violet-200"
-          animate={{ rotate: 360 }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
-        />
-
-        {/* Middle ring */}
-        <motion.div
-          className="absolute inset-3 rounded-full border-[3px] border-dashed border-violet-300"
-          animate={{ rotate: -360 }}
-          transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
-        />
-
-        {/* Inner gradient circle */}
-        <motion.div
-          className="absolute inset-6 rounded-full bg-gradient-to-br from-violet-500 to-purple-600"
-          animate={{ scale: [1, 1.05, 1] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-        />
-      </motion.div>
-
-      {/* Text */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
         className="text-center"
       >
-        <h2 className="text-sm font-medium text-[var(--color-action)] tracking-wider mb-2">
-          LEADMIND CARE
-        </h2>
-        <p className="text-xl font-bold text-[var(--color-text)]">
-          팀 궁합 분석이 진행중입니다
-        </p>
-      </motion.div>
-
-      {/* Progress bar */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-        className="w-48 h-1 bg-violet-100 rounded-full mt-10 overflow-hidden"
-      >
+        {/* Logo with pulse animation */}
         <motion.div
-          className="h-full bg-gradient-to-r from-violet-500 to-purple-500 rounded-full"
-          animate={{ x: ['-100%', '100%'] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-          style={{ width: '50%' }}
-        />
+          initial={{ y: -20 }}
+          animate={{ y: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+          className="mb-6"
+        >
+          <motion.div
+            className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-[var(--color-action)] to-[var(--color-primary)] flex items-center justify-center shadow-lg shadow-violet-300"
+            animate={{ scale: [1, 1.05, 1] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            <span className="text-white text-3xl font-bold">LM</span>
+          </motion.div>
+        </motion.div>
+
+        {/* Title */}
+        <motion.h1
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
+          className="text-2xl font-bold text-[var(--color-primary)] mb-2"
+        >
+          리드 마인드 케어
+        </motion.h1>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6, duration: 0.5 }}
+          className="text-[var(--color-gray-600)] mb-8"
+        >
+          팀 궁합 분석 중
+        </motion.p>
+
+        {/* Loading dots */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8, duration: 0.5 }}
+          className="flex justify-center gap-2"
+        >
+          {[0, 1, 2].map((i) => (
+            <motion.div
+              key={i}
+              className="w-3 h-3 rounded-full bg-[var(--color-action)]"
+              animate={{
+                y: [0, -8, 0],
+                opacity: [0.5, 1, 0.5],
+              }}
+              transition={{
+                duration: 0.8,
+                repeat: Infinity,
+                delay: i * 0.15,
+                ease: 'easeInOut',
+              }}
+            />
+          ))}
+        </motion.div>
       </motion.div>
-    </div>
+    </main>
   );
 }
