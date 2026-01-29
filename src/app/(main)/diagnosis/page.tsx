@@ -200,7 +200,7 @@ export default function DiagnosisPage() {
 
       {/* Question Area - 헤더 아래 */}
       <div className="pt-14 px-6">
-        <div className="pt-[110px]">
+        <div className="pt-[120px]">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentQuestion.id}
