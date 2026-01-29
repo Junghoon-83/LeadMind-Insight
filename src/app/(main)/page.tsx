@@ -33,23 +33,12 @@ export default function Home() {
     >
       <div className="text-center">
         {/* Liquid blob */}
-        <div className="relative w-24 h-24 mx-auto mb-10 overflow-visible">
-          {/* Soft glow */}
-          <motion.div
-            className="absolute -inset-5 bg-violet-400/25 blur-xl rounded-full"
-            animate={{
-              scale: [1, 1.12, 1.05, 1.1, 1],
-              x: [0, 2, -1, 1, 0],
-              y: [0, -1, 2, -1, 0],
-            }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-          />
-
-          {/* Main liquid blob */}
+        <div className="relative w-24 h-24 mx-auto mb-10">
+          {/* Main liquid blob with glow */}
           <motion.div
             className="absolute inset-0 bg-gradient-to-br from-violet-500 to-purple-600"
             style={{
-              boxShadow: '0 4px 20px rgba(139, 92, 246, 0.35)',
+              boxShadow: '0 0 40px 15px rgba(139, 92, 246, 0.3), 0 4px 20px rgba(139, 92, 246, 0.35)',
               borderRadius: '70% 30% 30% 70% / 60% 40% 60% 40%',
             }}
             animate={{
