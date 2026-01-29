@@ -27,14 +27,16 @@ export default function Home() {
         <div className="relative w-24 h-24 mx-auto mb-10">
           {/* Soft glow */}
           <motion.div
-            className="absolute inset-0 bg-violet-400/30 blur-2xl rounded-full"
+            className="absolute -inset-5 bg-violet-400/25 blur-xl rounded-full"
             animate={{
-              scale: [1, 1.15, 1],
+              scale: [1, 1.12, 1.05, 1.1, 1],
+              x: [0, 2, -1, 1, 0],
+              y: [0, -1, 2, -1, 0],
             }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
           />
 
-          {/* Main blob */}
+          {/* Main liquid blob */}
           <motion.div
             className="absolute inset-0 bg-gradient-to-br from-violet-500 to-purple-600"
             style={{
@@ -42,29 +44,63 @@ export default function Home() {
             }}
             animate={{
               borderRadius: [
-                '60% 40% 30% 70% / 60% 30% 70% 40%',
-                '30% 60% 70% 40% / 50% 60% 30% 60%',
-                '60% 40% 30% 70% / 60% 30% 70% 40%',
+                '70% 30% 30% 70% / 60% 40% 60% 40%',
+                '30% 70% 70% 30% / 40% 60% 40% 60%',
+                '55% 45% 40% 60% / 65% 35% 65% 35%',
+                '40% 60% 65% 35% / 35% 65% 35% 65%',
+                '70% 30% 30% 70% / 60% 40% 60% 40%',
               ],
-              scale: [1, 1.03, 1],
-              rotate: [0, 90, 180],
+              scale: [1, 1.02, 0.98, 1.01, 1],
+              x: [0, -2, 1, -1, 0],
+              y: [0, 1, -2, 1, 0],
             }}
             transition={{
-              duration: 5,
+              duration: 4,
               repeat: Infinity,
               ease: 'easeInOut',
             }}
           />
 
-          {/* Highlight */}
+          {/* Secondary blob - creates depth */}
           <motion.div
-            className="absolute inset-3 bg-gradient-to-br from-white/35 to-transparent rounded-full"
+            className="absolute inset-2 bg-gradient-to-tr from-violet-400/70 to-purple-500/70"
             animate={{
-              opacity: [0.5, 0.7, 0.5],
-              scale: [1, 0.95, 1],
+              borderRadius: [
+                '40% 60% 60% 40% / 50% 50% 50% 50%',
+                '60% 40% 40% 60% / 45% 55% 45% 55%',
+                '50% 50% 55% 45% / 60% 40% 60% 40%',
+                '55% 45% 45% 55% / 50% 50% 50% 50%',
+                '40% 60% 60% 40% / 50% 50% 50% 50%',
+              ],
+              scale: [1, 0.96, 1.03, 0.98, 1],
+              x: [0, 2, -2, 1, 0],
+              y: [0, -2, 1, -1, 0],
+              rotate: [0, 3, -2, 1, 0],
             }}
             transition={{
-              duration: 2,
+              duration: 3.5,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          />
+
+          {/* Highlight - liquid reflection */}
+          <motion.div
+            className="absolute inset-5 bg-gradient-to-br from-white/45 via-white/20 to-transparent"
+            animate={{
+              borderRadius: [
+                '60% 40% 50% 50% / 50% 50% 50% 50%',
+                '50% 50% 40% 60% / 40% 60% 40% 60%',
+                '45% 55% 55% 45% / 55% 45% 55% 45%',
+                '60% 40% 50% 50% / 50% 50% 50% 50%',
+              ],
+              opacity: [0.5, 0.35, 0.45, 0.5],
+              x: [0, 3, -2, 0],
+              y: [0, 2, -1, 0],
+              scale: [1, 0.92, 1.05, 1],
+            }}
+            transition={{
+              duration: 3,
               repeat: Infinity,
               ease: 'easeInOut',
             }}
