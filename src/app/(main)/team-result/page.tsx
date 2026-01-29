@@ -210,7 +210,7 @@ export default function TeamResultPage() {
                       {/* Tips */}
                       {compatibility.tips?.length > 0 && (
                         <div className="p-4 bg-gradient-to-r from-violet-50 to-purple-50 rounded-xl mt-2">
-                          <p className="text-xs font-bold text-[var(--color-primary)] uppercase tracking-wide mb-1.5">
+                          <p className="text-xs font-bold text-[var(--color-primary)] tracking-wide mb-1.5">
                             코칭 Tip
                           </p>
                           <p className="text-sm text-[var(--color-gray-700)] leading-relaxed">

@@ -18,7 +18,22 @@ function getKoreanTime(): string {
 }
 const SERVICE_REQUEST_SHEET = '서비스신청';
 const SERVICE_ACCOUNT_EMAIL = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-const PRIVATE_KEY = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n');
+
+// Private Key: Base64 인코딩 방식 우선, 없으면 기존 방식 사용
+function getPrivateKey(): string | undefined {
+  // Base64 인코딩된 키가 있으면 디코딩
+  if (process.env.GOOGLE_PRIVATE_KEY_BASE64) {
+    try {
+      return Buffer.from(process.env.GOOGLE_PRIVATE_KEY_BASE64, 'base64').toString('utf-8');
+    } catch (e) {
+      console.error('Failed to decode GOOGLE_PRIVATE_KEY_BASE64:', e);
+    }
+  }
+  // 기존 방식 (\\n을 실제 줄바꿈으로 변환)
+  return process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n');
+}
+
+const PRIVATE_KEY = getPrivateKey();
 
 // 시트 헤더 정의
 export const SHEET_HEADERS = [

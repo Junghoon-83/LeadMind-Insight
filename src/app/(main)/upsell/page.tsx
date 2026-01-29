@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Check, MessageCircle, Send, Loader2 } from 'lucide-react';
+import Image from 'next/image';
+import { Check, MessageCircle, Send, Loader2, FileText } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import { Button, Card } from '@/components/ui';
 import { useAssessmentStore } from '@/store/useAssessmentStore';
@@ -14,28 +15,38 @@ interface ServiceOption {
   id: ServiceType;
   label: string;
   description: string;
+  extendedDescription: string;
+  image?: string;
 }
 
 const serviceOptions: ServiceOption[] = [
   {
     id: 'team_diagnosis_link',
-    label: '팀 진단 Link 발송',
+    label: '팀 진단 Link',
     description: '팀원들에게 진단 링크를 보내 팀 전체 분석을 받아보세요',
+    extendedDescription: '팀원 개개인의 팔로워십 유형을 진단하고, 팀 전체의 역학 관계를 분석합니다. 리더와 팀원 간의 궁합을 파악하여 효과적인 협업 전략을 제시합니다.',
+    image: '/images/service-team-link.png',
   },
   {
     id: 'expert_consultation',
     label: '전문가 1:1 상담',
     description: '리더십 전문가와 1:1 상담을 통해 깊이 있는 코칭을 받으세요',
+    extendedDescription: '검증된 리더십 전문가가 진단 결과를 바탕으로 맞춤형 코칭을 제공합니다. 현재 직면한 리더십 과제에 대한 구체적인 해결책과 실행 전략을 함께 수립합니다.',
+    image: '/images/service-consultation.png',
   },
   {
     id: 'team_workshop',
     label: '팀 마인드 케어 워크샵',
     description: '팀 빌딩과 소통 향상을 위한 맞춤형 워크샵을 진행합니다',
+    extendedDescription: '팀의 진단 결과를 기반으로 설계된 맞춤형 워크샵입니다. 팀원 간 이해도를 높이고, 효과적인 소통 방식을 체험하며, 팀 시너지를 극대화하는 활동을 진행합니다.',
+    image: '/images/service-workshop.png',
   },
   {
     id: 'team_solution',
     label: '팀 이슈 케어 솔루션',
     description: '팀 내 갈등과 이슈를 해결하기 위한 전문 솔루션을 제공합니다',
+    extendedDescription: '팀 내 갈등, 소통 단절, 성과 저하 등 다양한 이슈에 대한 전문적인 진단과 해결책을 제공합니다. 조직심리 전문가가 팀 상황을 분석하고 맞춤형 개선 방안을 제시합니다.',
+    image: '/images/service-solution.png',
   },
 ];
 
@@ -106,9 +117,13 @@ export default function UpsellPage() {
     window.location.href = 'mailto:contact@leadmindinsight.com';
   };
 
+  const handleViewResult = () => {
+    router.push('/result');
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-[var(--color-background)]">
-      <Header title="케어 서비스" showBack onBack={handleBack} />
+      <Header title="리드 마인드 케어 서비스" showBack onBack={handleBack} />
 
       <div className="flex-1 px-6 py-8">
         {/* Title */}
@@ -135,50 +150,82 @@ export default function UpsellPage() {
           transition={{ delay: 0.2 }}
           className="space-y-3"
         >
-          {serviceOptions.map((service, index) => (
-            <motion.div
-              key={service.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.1 }}
-            >
-              <button
-                onClick={() => toggleService(service.id)}
-                className="w-full text-left"
+          {serviceOptions.map((service, index) => {
+            const isSelected = selectedServices.includes(service.id);
+
+            return (
+              <motion.div
+                key={service.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
               >
-                <Card
-                  padding="lg"
-                  className={`transition-all ${
-                    selectedServices.includes(service.id)
-                      ? 'border-2 border-[var(--color-action)] bg-[var(--color-violet-100)]'
-                      : 'border-2 border-transparent'
-                  }`}
+                <button
+                  onClick={() => toggleService(service.id)}
+                  className="w-full text-left"
                 >
-                  <div className="flex items-start gap-4">
-                    <div
-                      className={`w-6 h-6 rounded-md border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors ${
-                        selectedServices.includes(service.id)
-                          ? 'bg-[var(--color-action)] border-[var(--color-action)]'
-                          : 'border-[var(--color-violet-200)]'
-                      }`}
-                    >
-                      {selectedServices.includes(service.id) && (
-                        <Check className="w-4 h-4 text-white" />
-                      )}
+                  <Card
+                    padding="none"
+                    className={`overflow-hidden transition-all ${
+                      isSelected
+                        ? 'border-2 border-[var(--color-action)] bg-[var(--color-violet-50)]'
+                        : 'border-2 border-transparent hover:border-[var(--color-violet-200)]'
+                    }`}
+                  >
+                    {/* Header */}
+                    <div className="p-4">
+                      <div className="flex items-start gap-4">
+                        <div
+                          className={`w-6 h-6 rounded-md border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors ${
+                            isSelected
+                              ? 'bg-[var(--color-action)] border-[var(--color-action)]'
+                              : 'border-[var(--color-violet-200)]'
+                          }`}
+                        >
+                          {isSelected && (
+                            <Check className="w-4 h-4 text-white" />
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-[var(--color-text)]">
+                            {service.label}
+                          </h3>
+                          <p className="text-sm text-[var(--color-gray-600)] mt-1">
+                            {service.description}
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-[var(--color-text)]">
-                        {service.label}
-                      </h3>
-                      <p className="text-sm text-[var(--color-gray-600)] mt-1">
-                        {service.description}
-                      </p>
+
+                    {/* Always Expanded Content */}
+                    <div className="px-4 pb-4 pt-0">
+                      <div className="p-4 bg-white rounded-xl border border-[var(--color-violet-100)]">
+                        {/* Image */}
+                        {service.image && (
+                          <div className="relative w-full h-40 mb-4 rounded-lg overflow-hidden bg-[var(--color-violet-100)]">
+                            <Image
+                              src={service.image}
+                              alt={service.label}
+                              fill
+                              className="object-cover"
+                              onError={(e) => {
+                                // 이미지 로드 실패 시 숨김
+                                (e.target as HTMLImageElement).style.display = 'none';
+                              }}
+                            />
+                          </div>
+                        )}
+                        {/* Extended Description */}
+                        <p className="text-sm text-[var(--color-gray-700)] leading-relaxed">
+                          {service.extendedDescription}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </Card>
-              </button>
-            </motion.div>
-          ))}
+                  </Card>
+                </button>
+              </motion.div>
+            );
+          })}
         </motion.div>
 
         {/* Info */}
@@ -228,6 +275,10 @@ export default function UpsellPage() {
             )}
           </Button>
         )}
+        <Button fullWidth variant="outline" onClick={handleViewResult}>
+          <FileText className="w-5 h-5 mr-2" />
+          진단 결과 다시보기
+        </Button>
         <Button fullWidth variant="outline" onClick={handleInquiry}>
           <MessageCircle className="w-5 h-5 mr-2" />
           문의하기
