@@ -36,9 +36,11 @@ export default function ResultPage() {
   const [solutions, setSolutions] = useState<Record<string, SolutionData>>({});
   const [loading, setLoading] = useState(true);
 
-  // 데이터 로드
+  // 데이터 로드 (최소 1.5초 표시)
   useEffect(() => {
     async function fetchData() {
+      const startTime = Date.now();
+
       try {
         const [leadershipRes, solutionsRes] = await Promise.all([
           fetch('/api/leadership'),
@@ -51,6 +53,12 @@ export default function ResultPage() {
       } catch (error) {
         console.error('Failed to fetch data:', error);
       } finally {
+        // 최소 1.5초 로딩 표시
+        const elapsed = Date.now() - startTime;
+        const minLoadTime = 1500;
+        if (elapsed < minLoadTime) {
+          await new Promise(resolve => setTimeout(resolve, minLoadTime - elapsed));
+        }
         setLoading(false);
       }
     }
@@ -97,7 +105,7 @@ export default function ResultPage() {
   };
 
   if (loading) {
-    return <LiquidLoading title="진단 결과 분석 중" />;
+    return <LiquidLoading title="결과 준비 중" />;
   }
 
   if (!typeInfo) {
