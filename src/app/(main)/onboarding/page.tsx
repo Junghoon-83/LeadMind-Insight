@@ -30,7 +30,7 @@ export default function OnboardingPage() {
     router.prefetch('/diagnosis');
   }, [router]);
 
-  // 다중 이미지 자동 전환 (4초 간격, CSS 전환 2초 + Ken Burns 효과)
+  // 다중 이미지 자동 전환 (4초 간격, 페이드 전환 0.7초)
   useEffect(() => {
     const currentSlideData = onboardingSlides[currentSlide];
     if (!currentSlideData.images || currentSlideData.images.length <= 1) {
@@ -166,17 +166,16 @@ export default function OnboardingPage() {
                     {/* Subtle pattern overlay */}
                     <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_50%_50%,rgba(139,92,246,0.1)_1px,transparent_1px)] bg-[length:20px_20px]" />
                     {onboardingSlides[currentSlide].images ? (
-                      // 다중 이미지 - Ken Burns 효과 (페이드 + 줌)
+                      // 다중 이미지 - 깔끔한 페이드 전환
                       <>
                         {onboardingSlides[currentSlide].images.map((imgSrc, idx) => {
                           const isActive = idx === currentImageIndex;
                           return (
                             <div
                               key={idx}
-                              className="absolute inset-0 z-10 transition-all duration-[2000ms] ease-out origin-center"
+                              className="absolute inset-0 z-10 transition-opacity duration-700 ease-in-out"
                               style={{
                                 opacity: isActive ? 1 : 0,
-                                transform: isActive ? 'scale(1.08)' : 'scale(1)',
                               }}
                             >
                               <Image
