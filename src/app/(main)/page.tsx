@@ -27,9 +27,9 @@ export default function Home() {
 
   return (
     <motion.main
-      initial={{ opacity: 1 }}
+      initial={{ opacity: 0 }}
       animate={{ opacity: isExiting ? 0 : 1 }}
-      transition={{ duration: 0.5, ease: 'easeOut' }}
+      transition={{ duration: 0.6, ease: 'easeInOut' }}
       className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-violet-50 to-white px-6"
     >
       <motion.div
