@@ -185,10 +185,10 @@ export function getBrowser(): string {
   if (ua.includes('OPR') || ua.includes('Opera')) return 'Opera';
   // Samsung Browser
   if (ua.includes('SamsungBrowser')) return 'Samsung';
-  // Firefox
-  if (ua.includes('Firefox')) return 'Firefox';
-  // Chrome (Safari보다 먼저, Chrome UA에 Safari가 포함됨)
-  if (ua.includes('Chrome')) return 'Chrome';
+  // Firefox (iOS는 FxiOS)
+  if (ua.includes('Firefox') || ua.includes('FxiOS')) return 'Firefox';
+  // Chrome (Safari보다 먼저, iOS는 CriOS)
+  if (ua.includes('Chrome') || ua.includes('CriOS')) return 'Chrome';
   // Safari (Chrome이 아닌 경우만)
   if (ua.includes('Safari')) return 'Safari';
 

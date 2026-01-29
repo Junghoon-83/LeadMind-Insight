@@ -145,9 +145,9 @@ export default function DebugPage() {
     else if (ua.includes('edg')) expectedBrowser = 'Edge';
     else if (ua.includes('opr') || ua.includes('opera')) expectedBrowser = 'Opera';
     else if (ua.includes('samsungbrowser')) expectedBrowser = 'Samsung';
-    else if (ua.includes('firefox')) expectedBrowser = 'Firefox';
-    else if (ua.includes('chrome') && !ua.includes('edg')) expectedBrowser = 'Chrome';
-    else if (ua.includes('safari') && !ua.includes('chrome')) expectedBrowser = 'Safari';
+    else if (ua.includes('firefox') || ua.includes('fxios')) expectedBrowser = 'Firefox';
+    else if (ua.includes('chrome') || ua.includes('crios')) expectedBrowser = 'Chrome';
+    else if (ua.includes('safari') && !ua.includes('chrome') && !ua.includes('crios')) expectedBrowser = 'Safari';
 
     results.push({
       name: 'Browser-UserAgent 일관성',
