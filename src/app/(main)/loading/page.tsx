@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useAssessmentStore } from '@/store/useAssessmentStore';
@@ -9,10 +9,16 @@ import { calculateScores, determineLeadershipType } from '@/data/leadershipTypes
 export default function LoadingPage() {
   const router = useRouter();
   const { answers, setResult } = useAssessmentStore();
+  const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {
     const analyze = async () => {
-      await new Promise((resolve) => setTimeout(resolve, 2500));
+      // 2초 후 페이드아웃 시작
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      setIsExiting(true);
+
+      // 0.5초 페이드아웃 후 이동
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
       const scores = calculateScores(answers);
       const leadershipType = determineLeadershipType(scores);
@@ -28,8 +34,8 @@ export default function LoadingPage() {
     <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-violet-50 to-white px-6">
       <motion.div
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
+        animate={{ opacity: isExiting ? 0 : 1 }}
+        transition={{ duration: isExiting ? 0.5 : 0.6 }}
         className="text-center"
       >
         {/* Liquid blob */}
