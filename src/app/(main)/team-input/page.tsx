@@ -27,7 +27,7 @@ export default function TeamInputPage() {
 
   // 다음 페이지 프리페치
   useEffect(() => {
-    router.prefetch('/team-loading');
+    router.prefetch('/team-result');
   }, [router]);
 
   useEffect(() => {
@@ -78,7 +78,7 @@ export default function TeamInputPage() {
     });
 
     // 즉시 화면 전환
-    router.push('/team-loading');
+    router.push('/team-result');
   };
 
   const followershipTypesList = Object.values(followershipTypes);
