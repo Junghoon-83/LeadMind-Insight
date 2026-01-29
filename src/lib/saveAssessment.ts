@@ -115,14 +115,16 @@ export function getVisitCount(): number {
 // 한국 시간 포맷 (YYYY-MM-DD HH:mm:ss)
 export function getKoreanTime(): string {
   const now = new Date();
-  const options: Intl.DateTimeFormatOptions = { timeZone: 'Asia/Seoul' };
 
-  const year = now.toLocaleString('en-CA', { ...options, year: 'numeric' });
-  const month = now.toLocaleString('en-CA', { ...options, month: '2-digit' });
-  const day = now.toLocaleString('en-CA', { ...options, day: '2-digit' });
-  const hour = now.toLocaleString('en-GB', { ...options, hour: '2-digit', hour12: false });
-  const minute = now.toLocaleString('en-GB', { ...options, minute: '2-digit' });
-  const second = now.toLocaleString('en-GB', { ...options, second: '2-digit' });
+  // 한국 시간으로 변환
+  const koreaTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
+
+  const year = koreaTime.getFullYear();
+  const month = String(koreaTime.getMonth() + 1).padStart(2, '0');
+  const day = String(koreaTime.getDate()).padStart(2, '0');
+  const hour = String(koreaTime.getHours()).padStart(2, '0');
+  const minute = String(koreaTime.getMinutes()).padStart(2, '0');
+  const second = String(koreaTime.getSeconds()).padStart(2, '0');
 
   return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
 }

@@ -82,13 +82,13 @@ export default function DebugPage() {
       expected: 'UUID 형식 (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)',
     });
 
-    // 2. createdAt 형식 테스트 (ISO 8601)
-    const isoRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/;
+    // 2. createdAt 형식 테스트 (YYYY-MM-DD HH:mm:ss)
+    const dateRegex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
     results.push({
-      name: 'Created At (ISO 형식)',
-      pass: isoRegex.test(collected.createdAt),
+      name: 'Created At (날짜 형식)',
+      pass: dateRegex.test(collected.createdAt),
       actual: collected.createdAt,
-      expected: 'ISO 8601 형식',
+      expected: 'YYYY-MM-DD HH:mm:ss 형식',
     });
 
     // 3. visitCount 테스트 (1 이상의 정수)
