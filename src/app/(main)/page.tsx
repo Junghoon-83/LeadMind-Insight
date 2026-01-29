@@ -26,11 +26,16 @@ export default function Home() {
   }, [router]);
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-violet-50 to-white px-6">
+    <motion.main
+      initial={{ opacity: 1 }}
+      animate={{ opacity: isExiting ? 0 : 1 }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
+      className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-violet-50 to-white px-6"
+    >
       <motion.div
         initial={{ opacity: 0 }}
-        animate={{ opacity: isExiting ? 0 : 1 }}
-        transition={{ duration: isExiting ? 0.5 : 0.6 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
         className="text-center"
       >
         {/* Liquid blob */}
@@ -136,6 +141,6 @@ export default function Home() {
           LeadMind Care
         </motion.p>
       </motion.div>
-    </main>
+    </motion.main>
   );
 }
