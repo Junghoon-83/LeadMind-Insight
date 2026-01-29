@@ -10,7 +10,7 @@ export default function Home() {
   useEffect(() => {
     const timer = setTimeout(() => {
       router.push('/onboarding');
-    }, 1500);
+    }, 2000);
 
     return () => clearTimeout(timer);
   }, [router]);
