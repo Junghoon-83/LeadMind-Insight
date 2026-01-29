@@ -33,7 +33,7 @@ export default function Home() {
     >
       <div className="text-center">
         {/* Liquid blob */}
-        <div className="relative w-24 h-24 mx-auto mb-10">
+        <div className="relative w-24 h-24 mx-auto mb-10 overflow-visible">
           {/* Soft glow */}
           <motion.div
             className="absolute -inset-5 bg-violet-400/25 blur-xl rounded-full"
