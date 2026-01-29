@@ -30,7 +30,7 @@ export default function OnboardingPage() {
     router.prefetch('/diagnosis');
   }, [router]);
 
-  // 다중 이미지 자동 전환 (4초 간격, 페이드 전환 0.7초)
+  // 다중 이미지 자동 전환 (4초 간격, 페이드 전환 1.2초)
   useEffect(() => {
     const currentSlideData = onboardingSlides[currentSlide];
     if (!currentSlideData.images || currentSlideData.images.length <= 1) {
@@ -173,7 +173,7 @@ export default function OnboardingPage() {
                           return (
                             <div
                               key={idx}
-                              className="absolute inset-0 z-10 transition-opacity duration-700 ease-in-out"
+                              className="absolute inset-0 z-10 transition-opacity duration-[1200ms] ease-in-out"
                               style={{
                                 opacity: isActive ? 1 : 0,
                               }}
