@@ -208,10 +208,11 @@ export default function ProfilePage() {
           className="mb-8"
         >
           <h1 className="text-2xl font-bold text-[var(--color-text)]">
-            프로필을 입력해주세요
+            리더십 분석을 완료했어요.
           </h1>
-          <p className="text-[var(--color-gray-600)] mt-2">
-            맞춤 솔루션 제공을 위해 필요합니다
+          <p className="text-[var(--color-gray-600)] mt-2 leading-relaxed">
+            {nickname}님의 프로필을 입력하고<br />
+            리더십 분석 결과를 확인해보세요.
           </p>
         </motion.div>
 
