@@ -107,7 +107,7 @@ function LiquidBlobContent({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.5 }}
-        className="text-lg font-semibold text-violet-600 mb-1"
+        className="text-lg font-semibold text-[var(--color-primary)] mb-1"
       >
         {title}
       </motion.h1>

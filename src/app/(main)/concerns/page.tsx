@@ -80,7 +80,7 @@ export default function ConcernsPage() {
             고민을 알려주세요
           </h1>
           <p className="text-[var(--color-gray-600)] mt-2">
-            해당하는 고민을 모두 선택해주세요
+            해당하는 고민을 모두 선택해주세요.
           </p>
         </motion.div>
 

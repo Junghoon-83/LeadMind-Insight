@@ -130,7 +130,7 @@ export default function Home() {
         </div>
 
         {/* Text */}
-        <h1 className="text-lg font-semibold text-violet-600 mb-1">
+        <h1 className="text-lg font-semibold text-[var(--color-primary)] mb-1">
           리드 마인드 케어
         </h1>
 

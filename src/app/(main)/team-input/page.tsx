@@ -98,7 +98,7 @@ export default function TeamInputPage() {
             팀원 이해하기
           </h1>
           <p className="text-[var(--color-gray-600)] mt-2">
-            팔로워십 유형을 선택하고 팀원을 추가해주세요
+            팔로워십 유형을 선택하고 팀원을 추가해주세요.
           </p>
         </motion.div>
 

@@ -133,7 +133,7 @@ export default function UpsellPage() {
             리드 마인드 케어
           </h1>
           <p className="text-[var(--color-gray-600)] mt-2">
-            더 깊이 있는 리더십 성장을 위한 서비스입니다
+            더 깊이 있는 리더십 성장을 위한 서비스입니다.
           </p>
         </motion.div>
 

@@ -266,7 +266,7 @@ export default function DiagnosisPage() {
       <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white px-6 py-3 border-t border-[var(--color-violet-100)] z-40">
         <ProgressBar current={safeQuestionIndex + 1} total={totalQuestions} />
         <p className="text-xs text-[var(--color-gray-400)] text-center mt-2">
-          점수를 선택하면 자동으로 다음 문항으로 넘어갑니다
+          점수를 선택하면 자동으로 다음 문항으로 넘어갑니다.
         </p>
       </div>
     </div>
