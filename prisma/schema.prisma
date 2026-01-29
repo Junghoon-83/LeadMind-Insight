@@ -37,6 +37,23 @@ model Assessment {
   // 진행 상태 추적
   status           String       @default("onboarding") @db.VarChar(20) // onboarding, diagnosis, concerns, profile, team, service, completed
   lastQuestionIndex Int?        @map("last_question_index") // 진단 중단 시 마지막 문항
+  visitCount       Int          @default(1) @map("visit_count") // 방문 횟수
+
+  // 시간 추적
+  diagnosisStartedAt DateTime?  @map("diagnosis_started_at") // 진단 시작 시간
+  diagnosisEndedAt   DateTime?  @map("diagnosis_ended_at")   // 진단 완료 시간
+  diagnosisDuration  Int?       @map("diagnosis_duration")   // 진단 소요 시간 (초)
+
+  // 유입 경로
+  utmSource        String?      @map("utm_source") @db.VarChar(100)
+  utmMedium        String?      @map("utm_medium") @db.VarChar(100)
+  utmCampaign      String?      @map("utm_campaign") @db.VarChar(100)
+  referrer         String?      @db.VarChar(500) // 유입 URL
+
+  // 디바이스 정보
+  deviceType       String?      @map("device_type") @db.VarChar(20) // mobile, desktop, tablet
+  browser          String?      @db.VarChar(50)
+  screenWidth      Int?         @map("screen_width")
 
   // 사용자 정보 (이탈 시에도 저장 가능하도록 optional)
   nickname         String?      @db.VarChar(50)
@@ -60,11 +77,6 @@ model Assessment {
   // 케어 서비스 선택
   selectedServices Json?        @map("selected_services") // string[]
 
-  // 유입 경로
-  utmSource        String?      @map("utm_source") @db.VarChar(100)
-  utmMedium        String?      @map("utm_medium") @db.VarChar(100)
-  utmCampaign      String?      @map("utm_campaign") @db.VarChar(100)
-
   // 시간 정보
   createdAt        DateTime     @default(now()) @map("created_at")
   updatedAt        DateTime     @updatedAt @map("updated_at")
@@ -78,6 +90,7 @@ model Assessment {
   @@index([email])
   @@index([createdAt])
   @@index([leadershipType])
+  @@index([deviceType])
   @@map("assessments")
 }
 

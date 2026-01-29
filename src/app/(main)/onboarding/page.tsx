@@ -132,11 +132,8 @@ export default function OnboardingPage() {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5, ease: 'easeOut' }}
-      className="min-h-screen flex flex-col bg-white"
+    <div
+      className="min-h-screen flex flex-col bg-white animate-fade-in"
     >
       <AnimatePresence mode="wait">
         {/* Carousel Step */}
@@ -428,6 +425,6 @@ export default function OnboardingPage() {
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.div>
+    </div>
   );
 }

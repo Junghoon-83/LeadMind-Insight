@@ -181,3 +181,17 @@ h1, h2, h3, h4, h5, h6,
     border-color: var(--color-violet-200);
   }
 }
+
+/* Page Fade In Animation */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease-out forwards;
+}
