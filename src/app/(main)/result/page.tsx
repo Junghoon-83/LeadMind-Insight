@@ -77,9 +77,9 @@ export default function ResultPage() {
   // 차트 데이터 (원본 점수 유지, 6점 만점)
   const chartData = scores
     ? [
-        { label: '성장', value: scores.growth, color: 'from-violet-500 to-purple-600' },
-        { label: '공유', value: scores.sharing, color: 'from-indigo-500 to-violet-600' },
+        { label: '팀 공유', value: scores.sharing, color: 'from-indigo-500 to-violet-600' },
         { label: '상호작용', value: scores.interaction, color: 'from-purple-500 to-pink-500' },
+        { label: '팀 성장', value: scores.growth, color: 'from-violet-500 to-purple-600' },
       ]
     : [];
 

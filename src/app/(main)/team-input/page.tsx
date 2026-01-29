@@ -17,7 +17,10 @@ export default function TeamInputPage() {
 
   const followershipTypes = staticFollowershipTypes;
   const [selectedType, setSelectedType] = useState<string | null>(null);
-  const [expandedType, setExpandedType] = useState<string | null>(null);
+  // 모든 팔로워십 유형 설명을 기본으로 펼침
+  const [expandedTypes, setExpandedTypes] = useState<Set<string>>(
+    () => new Set(Object.keys(staticFollowershipTypes))
+  );
   const [memberName, setMemberName] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
@@ -40,7 +43,15 @@ export default function TeamInputPage() {
 
   const handleToggleExpand = (type: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    setExpandedType(expandedType === type ? null : type);
+    setExpandedTypes((prev) => {
+      const next = new Set(prev);
+      if (next.has(type)) {
+        next.delete(type);
+      } else {
+        next.add(type);
+      }
+      return next;
+    });
   };
 
   const handleAddMember = () => {
@@ -100,7 +111,7 @@ export default function TeamInputPage() {
             className="space-y-3 mb-6"
           >
             {followershipTypesList.map((type, index) => {
-              const isExpanded = expandedType === type.type;
+              const isExpanded = expandedTypes.has(type.type);
               return (
                 <motion.div
                   key={type.type}

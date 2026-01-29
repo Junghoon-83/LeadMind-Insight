@@ -238,7 +238,7 @@ export default function TeamResultPage() {
           className="pt-8 pb-8"
         >
           <Button fullWidth onClick={handleUpsell}>
-            케어 서비스 알아보기
+            서비스 더 알아보기
             <ArrowRight className="w-5 h-5 ml-2" />
           </Button>
         </motion.div>
