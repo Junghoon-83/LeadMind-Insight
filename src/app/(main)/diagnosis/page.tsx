@@ -200,7 +200,7 @@ export default function DiagnosisPage() {
 
       {/* Question Area - 헤더 아래 */}
       <div className="pt-14 px-6">
-        <div className="pt-6">
+        <div className="pt-[104px]">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentQuestion.id}
@@ -211,8 +211,8 @@ export default function DiagnosisPage() {
               className="flex flex-col"
             >
               {/* Question Number */}
-              <div className="mb-3">
-                <span className="text-sm font-medium text-[var(--color-action)]">
+              <div className="mb-3 text-center">
+                <span className="text-base font-medium text-[var(--color-action)]">
                   Q{safeQuestionIndex + 1}
                 </span>
               </div>
