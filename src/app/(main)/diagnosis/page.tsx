@@ -200,7 +200,7 @@ export default function DiagnosisPage() {
 
       {/* Question Area - 헤더 아래 */}
       <div className="pt-14 px-6">
-        <div className="pt-[104px]">
+        <div className="pt-[110px]">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentQuestion.id}
@@ -229,7 +229,7 @@ export default function DiagnosisPage() {
       </div>
 
       {/* Scale Buttons - 뷰포트 60% 지점 고정 */}
-      <div className="fixed top-[60%] left-1/2 -translate-x-1/2 w-full max-w-[430px] px-6 z-40">
+      <div className="fixed top-[calc(60%+6px)] left-1/2 -translate-x-1/2 w-full max-w-[430px] px-6 z-40">
         <div key={`buttons-${currentQuestion.id}`} className="flex justify-center gap-3">
           {[1, 2, 3, 4, 5, 6].map((score) => {
             const isSelected = currentAnswer === score;
