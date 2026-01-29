@@ -108,6 +108,7 @@ export default function TeamLoadingPage() {
             className="absolute inset-5 bg-gradient-to-br from-white/45 via-white/20 to-transparent"
             style={{
               borderRadius: '60% 40% 50% 50% / 50% 50% 50% 50%',
+              opacity: 0.5,
             }}
             animate={{
               borderRadius: [
