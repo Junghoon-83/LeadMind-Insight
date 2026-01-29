@@ -57,7 +57,7 @@ export default function Header({
             </h1>
           ) : (
             <h1 className="text-base font-bold text-[var(--color-primary)]">
-              리드마인드인사이트
+              리드 마인드 케어
             </h1>
           )}
           {subtitle && (

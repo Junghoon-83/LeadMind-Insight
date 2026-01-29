@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 import { Check, MessageCircle, Send, Loader2, FileText } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import { Button, Card } from '@/components/ui';
@@ -16,7 +15,6 @@ interface ServiceOption {
   label: string;
   description: string;
   extendedDescription: string;
-  image?: string;
 }
 
 const serviceOptions: ServiceOption[] = [
@@ -25,28 +23,24 @@ const serviceOptions: ServiceOption[] = [
     label: '팀 진단 Link',
     description: '팀원들에게 진단 링크를 보내 팀 전체 분석을 받아보세요',
     extendedDescription: '팀원 개개인의 팔로워십 유형을 진단하고, 팀 전체의 역학 관계를 분석합니다. 리더와 팀원 간의 궁합을 파악하여 효과적인 협업 전략을 제시합니다.',
-    image: '/images/service-team-link.png',
   },
   {
     id: 'expert_consultation',
     label: '전문가 1:1 상담',
     description: '리더십 전문가와 1:1 상담을 통해 깊이 있는 코칭을 받으세요',
     extendedDescription: '검증된 리더십 전문가가 진단 결과를 바탕으로 맞춤형 코칭을 제공합니다. 현재 직면한 리더십 과제에 대한 구체적인 해결책과 실행 전략을 함께 수립합니다.',
-    image: '/images/service-consultation.png',
   },
   {
     id: 'team_workshop',
     label: '팀 마인드 케어 워크샵',
     description: '팀 빌딩과 소통 향상을 위한 맞춤형 워크샵을 진행합니다',
     extendedDescription: '팀의 진단 결과를 기반으로 설계된 맞춤형 워크샵입니다. 팀원 간 이해도를 높이고, 효과적인 소통 방식을 체험하며, 팀 시너지를 극대화하는 활동을 진행합니다.',
-    image: '/images/service-workshop.png',
   },
   {
     id: 'team_solution',
     label: '팀 이슈 케어 솔루션',
     description: '팀 내 갈등과 이슈를 해결하기 위한 전문 솔루션을 제공합니다',
     extendedDescription: '팀 내 갈등, 소통 단절, 성과 저하 등 다양한 이슈에 대한 전문적인 진단과 해결책을 제공합니다. 조직심리 전문가가 팀 상황을 분석하고 맞춤형 개선 방안을 제시합니다.',
-    image: '/images/service-solution.png',
   },
 ];
 
@@ -200,21 +194,10 @@ export default function UpsellPage() {
                     {/* Always Expanded Content */}
                     <div className="px-4 pb-4 pt-0">
                       <div className="p-4 bg-white rounded-xl border border-[var(--color-violet-100)]">
-                        {/* Image */}
-                        {service.image && (
-                          <div className="relative w-full h-40 mb-4 rounded-lg overflow-hidden bg-[var(--color-violet-100)]">
-                            <Image
-                              src={service.image}
-                              alt={service.label}
-                              fill
-                              className="object-cover"
-                              onError={(e) => {
-                                // 이미지 로드 실패 시 숨김
-                                (e.target as HTMLImageElement).style.display = 'none';
-                              }}
-                            />
-                          </div>
-                        )}
+                        {/* Image Placeholder */}
+                        <div className="relative w-full h-40 mb-4 rounded-lg overflow-hidden bg-[var(--color-violet-100)] flex items-center justify-center">
+                          <span className="text-sm text-[var(--color-gray-400)]">이미지 제공 예정</span>
+                        </div>
                         {/* Extended Description */}
                         <p className="text-sm text-[var(--color-gray-700)] leading-relaxed">
                           {service.extendedDescription}

@@ -62,7 +62,7 @@ export default function TeamLoadingPage() {
         className="text-center"
       >
         <h2 className="text-sm font-medium text-[var(--color-action)] tracking-wider mb-2">
-          LEADMIND INSIGHT
+          LEADMIND CARE
         </h2>
         <p className="text-xl font-bold text-[var(--color-text)]">
           팀 궁합 분석이 진행중입니다

@@ -3,12 +3,12 @@ import Providers from "@/components/Providers";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "리드마인드인사이트 | LeadMind Insight",
+  title: "리드 마인드 케어 | LeadMind Care",
   description: "리더십 역량 진단 및 맞춤형 성장 팁 제공 서비스",
   keywords: ["리더십", "진단", "리더", "팔로워십", "팀 관리", "코칭"],
-  authors: [{ name: "LeadMind Insight" }],
+  authors: [{ name: "LeadMind Care" }],
   openGraph: {
-    title: "리드마인드인사이트",
+    title: "리드 마인드 케어",
     description: "리더십 역량 진단 및 맞춤형 성장 팁 제공",
     type: "website",
     locale: "ko_KR",

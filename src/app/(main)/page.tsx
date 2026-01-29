@@ -43,7 +43,7 @@ export default function Home() {
           transition={{ delay: 0.4, duration: 0.5 }}
           className="text-2xl font-bold text-[var(--color-primary)] mb-2"
         >
-          리드마인드인사이트
+          리드 마인드 케어
         </motion.h1>
 
         <motion.p
@@ -52,7 +52,7 @@ export default function Home() {
           transition={{ delay: 0.6, duration: 0.5 }}
           className="text-[var(--color-gray-600)]"
         >
-          LeadMind Insight
+          LeadMind Care
         </motion.p>
 
         {/* Loading indicator */}
