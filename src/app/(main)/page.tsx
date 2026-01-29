@@ -1,26 +1,36 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 
 export default function Home() {
   const router = useRouter();
+  const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    // 1.5초 후 페이드아웃 시작
+    const fadeTimer = setTimeout(() => {
+      setIsExiting(true);
+    }, 1500);
+
+    // 2초 후 페이지 이동 (페이드아웃 0.5초)
+    const navTimer = setTimeout(() => {
       router.push('/onboarding');
     }, 2000);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(fadeTimer);
+      clearTimeout(navTimer);
+    };
   }, [router]);
 
   return (
     <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-violet-50 to-white px-6">
       <motion.div
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
+        animate={{ opacity: isExiting ? 0 : 1 }}
+        transition={{ duration: isExiting ? 0.5 : 0.6 }}
         className="text-center"
       >
         {/* Liquid blob */}
