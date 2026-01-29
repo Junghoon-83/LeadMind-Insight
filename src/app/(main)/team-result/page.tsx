@@ -119,6 +119,7 @@ export default function TeamResultPage() {
               className="absolute inset-0 bg-gradient-to-br from-violet-500 to-purple-600"
               style={{
                 boxShadow: '0 4px 20px rgba(139, 92, 246, 0.35)',
+                borderRadius: '70% 30% 30% 70% / 60% 40% 60% 40%',
               }}
               animate={{
                 borderRadius: [
@@ -142,6 +143,9 @@ export default function TeamResultPage() {
             {/* Secondary blob - creates depth */}
             <motion.div
               className="absolute inset-2 bg-gradient-to-tr from-violet-400/70 to-purple-500/70"
+              style={{
+                borderRadius: '40% 60% 60% 40% / 50% 50% 50% 50%',
+              }}
               animate={{
                 borderRadius: [
                   '40% 60% 60% 40% / 50% 50% 50% 50%',
@@ -165,6 +169,9 @@ export default function TeamResultPage() {
             {/* Highlight - liquid reflection */}
             <motion.div
               className="absolute inset-5 bg-gradient-to-br from-white/45 via-white/20 to-transparent"
+              style={{
+                borderRadius: '60% 40% 50% 50% / 50% 50% 50% 50%',
+              }}
               animate={{
                 borderRadius: [
                   '60% 40% 50% 50% / 50% 50% 50% 50%',
