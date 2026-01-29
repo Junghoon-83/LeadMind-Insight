@@ -2,13 +2,21 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { Loader2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Loader2, Check } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import { Button } from '@/components/ui';
-import { concerns as staticConcerns, CATEGORY_NAMES, type ConcernCategory } from '@/data/concerns';
+import { concerns as staticConcerns } from '@/data/concerns';
 import { useAssessmentStore } from '@/store/useAssessmentStore';
 import { saveAssessment, getDiagnosisDuration, getKoreanTime } from '@/lib/saveAssessment';
+
+// 카테고리 태그 색상
+const CATEGORY_COLORS = {
+  E: { bg: 'bg-blue-50', text: 'text-blue-600', label: '팀 실행력' },
+  G: { bg: 'bg-green-50', text: 'text-green-600', label: '팀 성장' },
+  C: { bg: 'bg-amber-50', text: 'text-amber-600', label: '팀 소통' },
+  L: { bg: 'bg-purple-50', text: 'text-purple-600', label: '리더십' },
+} as const;
 
 export default function ConcernsPage() {
   const router = useRouter();
@@ -50,35 +58,21 @@ export default function ConcernsPage() {
 
   const isSelected = (id: string) => selectedConcerns.includes(id);
 
-  // Group concerns by their primary category (groupName)
-  const groupedConcerns = useMemo(() => {
-    const groups: { name: string; category: ConcernCategory; items: typeof concerns }[] = [];
-    const categoryOrder: ConcernCategory[] = ['E', 'G', 'C', 'L'];
-
-    categoryOrder.forEach((cat) => {
-      const items = concerns.filter((c) => c.categories[0] === cat);
-      if (items.length > 0) {
-        groups.push({
-          name: CATEGORY_NAMES[cat],
-          category: cat,
-          items,
-        });
-      }
-    });
-
-    return groups;
-  }, [concerns]);
+  // 선택된 고민 목록
+  const selectedConcernItems = useMemo(() => {
+    return concerns.filter((c) => selectedConcerns.includes(c.id));
+  }, [concerns, selectedConcerns]);
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Header title="고민 선택" showBack onBack={handleBack} />
 
-      <div className="flex-1 flex flex-col px-6 py-8">
+      <div className="flex-1 flex flex-col px-6 py-6">
         {/* Title */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-6"
+          className="mb-5"
         >
           <h1 className="text-2xl font-bold text-[var(--color-text)]">
             <span className="text-[var(--color-primary)]">{nickname}</span>님의
@@ -87,48 +81,57 @@ export default function ConcernsPage() {
             고민을 알려주세요
           </h1>
           <p className="text-[var(--color-gray-600)] mt-2">
-            복수 선택 가능합니다
+            해당하는 고민을 모두 선택해주세요
           </p>
         </motion.div>
 
-        {/* Grouped Keywords */}
-        <div className="flex-1 overflow-y-auto space-y-6">
-          {groupedConcerns.length > 0 ? (
-            groupedConcerns.map((group, groupIndex) => (
-              <motion.div
-                key={group.category}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: groupIndex * 0.1 }}
-              >
-                {/* Group Header */}
-                <div className="mb-3">
-                  <h3 className="text-sm font-semibold text-[var(--color-gray-600)]">
-                    {group.name}
-                  </h3>
-                </div>
+        {/* Flat List with Category Tags */}
+        <div className="flex-1 overflow-y-auto space-y-2 pb-4">
+          {concerns.length > 0 ? (
+            concerns.map((concern, index) => {
+              const category = concern.categories[0];
+              const colorStyle = CATEGORY_COLORS[category];
+              const selected = isSelected(concern.id);
 
-                {/* Group Items */}
-                <div className="space-y-2">
-                  {group.items.map((concern, index) => (
-                    <motion.button
-                      key={concern.id}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: groupIndex * 0.1 + index * 0.03 }}
-                      onClick={() => toggleConcern(concern.id)}
-                      className={`w-full text-left px-4 py-3 rounded-xl border-2 transition-all duration-200 text-sm leading-relaxed ${
-                        isSelected(concern.id)
-                          ? 'border-[var(--color-action)] bg-[var(--color-violet-50)] text-[var(--color-primary)]'
-                          : 'border-[var(--color-gray-200)] bg-white text-[var(--color-gray-700)] hover:border-[var(--color-violet-200)]'
-                      }`}
-                    >
-                      {concern.label}
-                    </motion.button>
-                  ))}
-                </div>
-              </motion.div>
-            ))
+              return (
+                <motion.button
+                  key={concern.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.02 }}
+                  onClick={() => toggleConcern(concern.id)}
+                  className={`w-full text-left px-4 py-3 rounded-xl border-2 transition-all duration-200 ${
+                    selected
+                      ? 'border-[var(--color-action)] bg-[var(--color-violet-50)]'
+                      : 'border-[var(--color-gray-200)] bg-white hover:border-[var(--color-violet-200)]'
+                  }`}
+                >
+                  <div className="flex items-start gap-3">
+                    {/* 체크 아이콘 */}
+                    <div className={`flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center mt-0.5 transition-all ${
+                      selected
+                        ? 'border-[var(--color-action)] bg-[var(--color-action)]'
+                        : 'border-[var(--color-gray-300)]'
+                    }`}>
+                      {selected && <Check className="w-3 h-3 text-white" />}
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      {/* 카테고리 태그 */}
+                      <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium mb-1.5 ${colorStyle.bg} ${colorStyle.text}`}>
+                        #{colorStyle.label}
+                      </span>
+                      {/* 고민 텍스트 */}
+                      <p className={`text-sm leading-relaxed ${
+                        selected ? 'text-[var(--color-primary)] font-medium' : 'text-[var(--color-gray-700)]'
+                      }`}>
+                        {concern.label}
+                      </p>
+                    </div>
+                  </div>
+                </motion.button>
+              );
+            })
           ) : (
             <div className="flex items-center justify-center h-40 text-[var(--color-gray-400)]">
               고민 키워드 데이터를 추가해주세요
@@ -136,8 +139,45 @@ export default function ConcernsPage() {
           )}
         </div>
 
+        {/* 선택 요약 */}
+        <AnimatePresence>
+          {selectedConcernItems.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="border-t border-[var(--color-gray-200)] pt-4 mb-4"
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-sm font-semibold text-[var(--color-text)]">
+                  선택한 고민
+                </span>
+                <span className="px-2 py-0.5 rounded-full bg-[var(--color-action)] text-white text-xs font-bold">
+                  {selectedConcernItems.length}
+                </span>
+              </div>
+              <div className="space-y-1.5">
+                {selectedConcernItems.map((item) => {
+                  const colorStyle = CATEGORY_COLORS[item.categories[0]];
+                  return (
+                    <div
+                      key={item.id}
+                      className="flex items-center gap-2 text-sm leading-relaxed"
+                    >
+                      <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${colorStyle.bg} ${colorStyle.text}`}>
+                        #{colorStyle.label}
+                      </span>
+                      <span className="text-[var(--color-gray-700)]">{item.label}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Button */}
-        <div className="pt-6">
+        <div className="pt-2">
           <Button
             fullWidth
             onClick={handleNext}
@@ -149,12 +189,9 @@ export default function ConcernsPage() {
                 분석 준비 중...
               </>
             ) : (
-              '다음'
+              `다음 (${selectedConcerns.length}개 선택됨)`
             )}
           </Button>
-          <p className="text-center text-sm text-[var(--color-gray-400)] mt-3">
-            {selectedConcerns.length}개 선택됨
-          </p>
         </div>
       </div>
     </div>
