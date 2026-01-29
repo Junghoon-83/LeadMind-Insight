@@ -27,17 +27,12 @@ export default function Home() {
 
   return (
     <motion.main
-      initial={{ opacity: 0 }}
+      initial={{ opacity: 1 }}
       animate={{ opacity: isExiting ? 0 : 1 }}
-      transition={{ duration: 0.6, ease: 'easeInOut' }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
       className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-violet-50 to-white px-6"
     >
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
-        className="text-center"
-      >
+      <div className="text-center">
         {/* Liquid blob */}
         <div className="relative w-24 h-24 mx-auto mb-10">
           {/* Soft glow */}
@@ -123,24 +118,14 @@ export default function Home() {
         </div>
 
         {/* Text */}
-        <motion.h1
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
-          className="text-lg font-semibold text-violet-600 mb-1"
-        >
+        <h1 className="text-lg font-semibold text-violet-600 mb-1">
           리드 마인드 케어
-        </motion.h1>
+        </h1>
 
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.5 }}
-          className="text-sm text-gray-400"
-        >
+        <p className="text-sm text-gray-400">
           LeadMind Care
-        </motion.p>
-      </motion.div>
+        </p>
+      </div>
     </motion.main>
   );
 }
