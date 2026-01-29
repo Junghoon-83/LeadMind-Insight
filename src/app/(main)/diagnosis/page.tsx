@@ -229,7 +229,7 @@ export default function DiagnosisPage() {
       </div>
 
       {/* Scale Buttons - 뷰포트 60% 지점 고정 */}
-      <div className="fixed top-[calc(60%+6px)] left-1/2 -translate-x-1/2 w-full max-w-[430px] px-6 z-40">
+      <div className="fixed top-[66%] left-1/2 -translate-x-1/2 w-full max-w-[430px] px-6 z-40">
         <div key={`buttons-${currentQuestion.id}`} className="flex justify-center gap-3">
           {[1, 2, 3, 4, 5, 6].map((score) => {
             const isSelected = currentAnswer === score;
