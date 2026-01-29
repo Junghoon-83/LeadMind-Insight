@@ -30,7 +30,7 @@ export default function Home() {
       initial={{ opacity: 1 }}
       animate={{ opacity: isExiting ? 0 : 1 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
-      className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-violet-50 to-white px-6"
+      className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-violet-50 to-white px-6 animate-fade-in-fast"
     >
       <div className="text-center">
         {/* Liquid blob */}
