@@ -8,6 +8,22 @@ export default function Home() {
   const router = useRouter();
   const [isExiting, setIsExiting] = useState(false);
 
+  // 온보딩 이미지 프리로드
+  useEffect(() => {
+    const imagesToPreload = [
+      '/images/Slide1_1.png',
+      '/images/Slide1_2.png',
+      '/images/Slide1_3.png',
+      '/images/onboarding-2.png',
+      '/images/onboarding-3.png',
+    ];
+
+    imagesToPreload.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
+
   useEffect(() => {
     // 1.5초 후 페이드아웃 시작
     const fadeTimer = setTimeout(() => {
