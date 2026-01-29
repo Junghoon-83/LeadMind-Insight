@@ -151,7 +151,7 @@ export default function ResultPage() {
             <h2 className="text-2xl font-bold text-[var(--color-text)] mb-2">
               {typeInfo.name}
             </h2>
-            <p className="text-[var(--color-primary)] font-medium">{typeInfo.title}</p>
+            <p className="text-[var(--color-primary)] font-medium" style={{ wordBreak: 'keep-all' }}>{typeInfo.title}</p>
           </Card>
         </motion.div>
 

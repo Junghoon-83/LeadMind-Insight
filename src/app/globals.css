@@ -50,6 +50,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* 제목/주요 문장은 단어 단위 줄바꿈 */
+h1, h2, h3, h4, h5, h6,
+.keep-all {
+  word-break: keep-all;
+}
+
 /* Mobile First Container */
 .app-container {
   max-width: 430px;
