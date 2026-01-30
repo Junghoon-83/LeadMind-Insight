@@ -48,7 +48,9 @@ export default function ConcernsPage() {
     router.push('/loading');
   };
 
+  const MAX_CONCERNS = 3;
   const isSelected = (id: string) => selectedConcerns.includes(id);
+  const isMaxSelected = selectedConcerns.length >= MAX_CONCERNS;
 
   // 카테고리별로 고민 그룹화
   const groupedConcerns = concerns.reduce((acc, concern) => {
@@ -80,7 +82,7 @@ export default function ConcernsPage() {
             고민을 알려주세요.
           </h1>
           <p className="text-[var(--color-gray-600)] mt-2">
-            해당하는 고민을 모두 선택해주세요.
+            해당하는 고민을 선택해주세요. (최소 1개, 최대 3개)
           </p>
         </motion.div>
 
@@ -93,17 +95,22 @@ export default function ConcernsPage() {
             return items.map((concern, index) => {
               const selected = isSelected(concern.id);
 
+              const isDisabled = !selected && isMaxSelected;
+
               return (
                 <motion.button
                   key={concern.id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: categoryIndex * 0.05 + index * 0.02 }}
-                  onClick={() => toggleConcern(concern.id)}
+                  onClick={() => !isDisabled && toggleConcern(concern.id)}
+                  disabled={isDisabled}
                   className={`w-full text-left px-4 py-3 rounded-xl border-2 transition-all duration-200 ${
                     selected
                       ? 'border-[var(--color-action)] bg-[var(--color-violet-50)]'
-                      : 'border-[var(--color-gray-200)] bg-white hover:border-[var(--color-violet-200)]'
+                      : isDisabled
+                        ? 'border-[var(--color-gray-200)] bg-[var(--color-gray-100)] opacity-50 cursor-not-allowed'
+                        : 'border-[var(--color-gray-200)] bg-white hover:border-[var(--color-violet-200)]'
                   }`}
                 >
                   <div className="flex items-center gap-3">
