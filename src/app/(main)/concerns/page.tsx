@@ -109,7 +109,7 @@ export default function ConcernsPage() {
                     selected
                       ? 'border-[var(--color-action)] bg-[var(--color-violet-50)]'
                       : isDisabled
-                        ? 'border-[var(--color-gray-200)] bg-[var(--color-gray-100)] opacity-50 cursor-not-allowed'
+                        ? 'border-[var(--color-gray-200)] bg-[var(--color-gray-100)] cursor-not-allowed'
                         : 'border-[var(--color-gray-200)] bg-white hover:border-[var(--color-violet-200)]'
                   }`}
                 >
@@ -118,14 +118,20 @@ export default function ConcernsPage() {
                     <div className={`flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
                       selected
                         ? 'border-[var(--color-action)] bg-[var(--color-action)]'
-                        : 'border-[var(--color-gray-300)]'
+                        : isDisabled
+                          ? 'border-[var(--color-gray-200)]'
+                          : 'border-[var(--color-gray-300)]'
                     }`}>
                       {selected && <Check className="w-3 h-3 text-white" />}
                     </div>
 
                     {/* 고민 텍스트 */}
                     <p className={`text-sm leading-relaxed ${
-                      selected ? 'text-[var(--color-primary)] font-medium' : 'text-[var(--color-gray-700)]'
+                      selected
+                        ? 'text-[var(--color-primary)] font-medium'
+                        : isDisabled
+                          ? 'text-[var(--color-gray-400)]'
+                          : 'text-[var(--color-gray-700)]'
                     }`}>
                       {concern.label}
                     </p>
