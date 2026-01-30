@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, X, ChevronDown, ChevronUp, Loader2 } from 'lucide-react';
@@ -24,6 +24,7 @@ export default function TeamInputPage() {
   const [memberName, setMemberName] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
+  const teamMembersRef = useRef<HTMLDivElement>(null);
 
   // 다음 페이지 프리페치
   useEffect(() => {
@@ -60,6 +61,11 @@ export default function TeamInputPage() {
       setMemberName('');
       setSelectedType(null);
       setShowModal(false);
+
+      // 팀원 목록으로 스크롤
+      setTimeout(() => {
+        teamMembersRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      }, 100);
     }
   };
 
@@ -187,6 +193,7 @@ export default function TeamInputPage() {
         {/* Added Members */}
         {teamMembers.length > 0 && (
           <motion.div
+            ref={teamMembersRef}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="mb-6"
