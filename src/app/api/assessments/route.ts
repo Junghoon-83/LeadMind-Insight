@@ -69,7 +69,15 @@ export async function PUT(request: NextRequest) {
     const adminKey = searchParams.get('key');
     const action = searchParams.get('action') || 'headers';
 
-    if (adminKey !== 'update-headers-2024') {
+    if (!process.env.ADMIN_SHEET_KEY) {
+      console.error('ADMIN_SHEET_KEY environment variable is not set');
+      return NextResponse.json(
+        { error: 'Server configuration error' },
+        { status: 500 }
+      );
+    }
+
+    if (adminKey !== process.env.ADMIN_SHEET_KEY) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }

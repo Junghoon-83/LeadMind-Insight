@@ -60,16 +60,12 @@ export async function POST(request: Request) {
       }
       isValid = password === process.env.ADMIN_PASSWORD;
     } else {
-      // 환경변수 없음 - 기본 비밀번호 사용 (개발 환경만)
-      if (process.env.NODE_ENV === 'production') {
-        logger.error('CRITICAL: No admin password configured in production', { clientIP });
-        return NextResponse.json(
-          { error: '서버 설정 오류입니다.' },
-          { status: 500 }
-        );
-      }
-      // 개발용 기본 비밀번호
-      isValid = password === 'leadmind2024!';
+      // 환경변수 없음 - 비밀번호 설정 필요
+      logger.error('CRITICAL: No admin password configured (ADMIN_PASSWORD or ADMIN_PASSWORD_HASH required)', { clientIP });
+      return NextResponse.json(
+        { error: '서버 설정 오류입니다. 관리자 비밀번호가 설정되지 않았습니다.' },
+        { status: 500 }
+      );
     }
 
     if (!isValid) {
