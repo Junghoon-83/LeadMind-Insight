@@ -270,7 +270,7 @@ export async function saveServiceRequest(data: {
     const serviceNames: Record<string, string> = {
       team_diagnosis_link: '팀 진단 Link 발송',
       expert_consultation: '전문가 1:1 상담',
-      team_workshop: '팀 마인드 케어 워크샵',
+      team_workshop: '팀 마인드 케어 워크숍',
       team_solution: '팀 이슈 케어 솔루션',
     };
 

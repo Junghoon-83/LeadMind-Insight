@@ -32,9 +32,9 @@ const serviceOptions: ServiceOption[] = [
   },
   {
     id: 'team_workshop',
-    label: '팀 마인드 케어 워크샵',
+    label: '팀 마인드 케어 워크숍',
     description: '효과적인 소통방식을 통해 팀 시너지를 경험해 보세요.',
-    extendedDescription: '팀의 진단 결과를 기반으로 설계된 맞춤형 워크샵입니다. 팀원 간 이해도를 높이고, 효과적인 소통방식을 체험하며, 팀 시너지를 극대화하는 활동을 진행합니다.',
+    extendedDescription: '팀의 진단 결과를 기반으로 설계된 맞춤형 워크숍입니다. 팀원 간 이해도를 높이고, 효과적인 소통방식을 체험하며, 팀 시너지를 극대화하는 활동을 진행합니다.',
   },
   {
     id: 'team_solution',
