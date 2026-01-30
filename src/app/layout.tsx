@@ -30,6 +30,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
+      <head>
+        {/* 온보딩 이미지 프리로드 - 초기 로딩 속도 개선 */}
+        <link rel="preload" href="/images/Slide1_1.png" as="image" />
+        <link rel="preload" href="/images/onboarding-2.png" as="image" />
+        <link rel="preload" href="/images/onboarding-3.png" as="image" />
+      </head>
       <body className="antialiased">
         <Providers>{children}</Providers>
       </body>
