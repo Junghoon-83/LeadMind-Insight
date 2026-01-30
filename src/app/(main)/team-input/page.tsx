@@ -24,6 +24,7 @@ export default function TeamInputPage() {
   const [memberName, setMemberName] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
   const teamMembersRef = useRef<HTMLDivElement>(null);
 
   // 다음 페이지 프리페치
@@ -56,7 +57,9 @@ export default function TeamInputPage() {
   };
 
   const handleAddMember = () => {
+    if (isAdding) return;
     if (memberName.trim() && selectedType) {
+      setIsAdding(true);
       addTeamMember(memberName.trim(), selectedType);
       setMemberName('');
       setSelectedType(null);
@@ -65,6 +68,7 @@ export default function TeamInputPage() {
       // 팀원 목록으로 스크롤
       setTimeout(() => {
         teamMembersRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        setIsAdding(false);
       }, 100);
     }
   };
