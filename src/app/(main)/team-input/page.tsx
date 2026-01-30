@@ -283,6 +283,7 @@ export default function TeamInputPage() {
                 onChange={(e) => setMemberName(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && memberName.trim()) {
+                    e.preventDefault();
                     handleAddMember();
                   }
                 }}
