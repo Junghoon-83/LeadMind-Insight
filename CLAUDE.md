@@ -18,6 +18,9 @@ npm test -- path/file.test.ts  # 단일 테스트 파일
 npm run test:coverage    # 커버리지 리포트
 netlify deploy --prod    # Netlify 프로덕션 배포
 npm run hash-password    # 관리자 비밀번호 해시 생성
+npm run db:seed          # 정적 데이터 → DB 싱크
+npm run db:push          # Prisma 스키마 → DB 반영
+npm run db:studio        # Prisma Studio (DB GUI)
 ```
 
 ## 아키텍처
@@ -33,6 +36,14 @@ onboarding → diagnosis → concerns → profile → result → team-input → 
 1. **Prisma DB**: `DATABASE_URL` 설정 시 DB 우선 사용
 2. **정적 데이터**: `src/data/` 폴더에서 폴백
 3. **Google Sheets**: 진단 결과/서비스 신청 저장 (`src/lib/googleSheets.ts`)
+
+### DB 싱크 (단방향)
+```
+코드 (src/data/*.ts) → npm run db:seed → DB
+```
+- **개발 시**: 정적 데이터 파일 수정 후 `npm run db:seed` 실행
+- **운영 시**: Admin CMS에서 DB 직접 수정 (DB가 source of truth)
+- **주의**: DB 수정 내용은 코드 파일에 자동 반영되지 않음
 
 ### 상태 관리 (Zustand)
 - `useAssessmentStore`: 진단 상태 (닉네임, 답변, 고민, 프로필, 결과, 팀원)
