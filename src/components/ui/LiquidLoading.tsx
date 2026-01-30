@@ -11,7 +11,7 @@ interface LiquidLoadingProps {
 
 function LiquidBlobContent({
   title = '로딩 중',
-  subtitle = '잠시만 기다려주세요',
+  subtitle = '잠시만 기다려주세요.',
 }: Omit<LiquidLoadingProps, 'fullPage'>) {
   return (
     <motion.div

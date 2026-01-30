@@ -375,7 +375,7 @@ export default function OnboardingPage() {
                     <span className="text-3xl">📊</span>
                   </div>
                   <h3 className="text-xl font-bold text-center text-[var(--color-text)] mb-2">
-                    이전 진단 결과가 있습니다
+                    이전 진단 결과가 있습니다.
                   </h3>
                   <p className="text-center text-[var(--color-gray-600)] text-sm mb-6">
                     {nickname}님의 진단 결과를 확인하거나<br />
@@ -401,7 +401,7 @@ export default function OnboardingPage() {
                     <span className="text-3xl">📝</span>
                   </div>
                   <h3 className="text-xl font-bold text-center text-[var(--color-text)] mb-2">
-                    진행 중인 진단이 있습니다
+                    진행 중인 진단이 있습니다.
                   </h3>
                   <p className="text-center text-[var(--color-gray-600)] text-sm mb-6">
                     이전에 진행하던 진단을 이어서 할 수 있습니다.

@@ -20,7 +20,7 @@ export const onboardingSlides: OnboardingSlide[] = [
   {
     id: 3,
     title: '5분으로 시작하는 변화',
-    description: '간편한 진단 후 바로 적용 가능한\n나만의 맞춤 솔루션을 받아보세요',
+    description: '간편한 진단 후 바로 적용 가능한\n나만의 맞춤 솔루션을 받아보세요.',
     image: '/images/onboarding-3.png',
   },
 ];
