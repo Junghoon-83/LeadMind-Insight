@@ -268,7 +268,7 @@ export default function TeamInputPage() {
               </h3>
               <p className="text-sm text-[var(--color-gray-600)] mb-4">
                 {selectedType && followershipTypes[selectedType as FollowershipTypeCode]?.name} 유형의 팀원
-                이름을 입력해주세요
+                이름을 입력해주세요.
               </p>
               <Input
                 placeholder="팀원 이름"

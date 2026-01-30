@@ -283,7 +283,7 @@ export default function OnboardingPage() {
                 />
 
                 <p className="text-sm text-[var(--color-gray-400)] mt-3">
-                  최대 10자까지 입력 가능합니다
+                  최대 10자까지 입력 가능합니다.
                 </p>
               </motion.div>
             </div>
