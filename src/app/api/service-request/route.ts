@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { saveServiceRequest } from '@/lib/googleSheets';
+import { logger } from '@/lib/logger';
 
 // POST: 서비스 신청 저장
 export async function POST(request: NextRequest) {
@@ -33,7 +34,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Service request save error:', error);
+    logger.error('Service request save error', {}, error instanceof Error ? error : undefined);
     return NextResponse.json(
       { error: 'Failed to save service request' },
       { status: 500 }

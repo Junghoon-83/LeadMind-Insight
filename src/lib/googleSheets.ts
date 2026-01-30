@@ -1,21 +1,8 @@
 import { google } from 'googleapis';
+import { logger } from '@/lib/logger';
+import { getKoreanTime } from '@/lib/saveAssessment';
 
 const SPREADSHEET_ID = process.env.GOOGLE_SHEETS_SPREADSHEET_ID;
-
-// 한국 시간 포맷 (YYYY-MM-DD HH:mm:ss)
-function getKoreanTime(): string {
-  const now = new Date();
-  const options: Intl.DateTimeFormatOptions = { timeZone: 'Asia/Seoul' };
-
-  const year = now.toLocaleString('en-CA', { ...options, year: 'numeric' });
-  const month = now.toLocaleString('en-CA', { ...options, month: '2-digit' });
-  const day = now.toLocaleString('en-CA', { ...options, day: '2-digit' });
-  const hour = now.toLocaleString('en-GB', { ...options, hour: '2-digit', hour12: false });
-  const minute = now.toLocaleString('en-GB', { ...options, minute: '2-digit' });
-  const second = now.toLocaleString('en-GB', { ...options, second: '2-digit' });
-
-  return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
-}
 const SERVICE_REQUEST_SHEET = '서비스신청';
 const SERVICE_ACCOUNT_EMAIL = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
 
@@ -26,7 +13,7 @@ function getPrivateKey(): string | undefined {
     try {
       return Buffer.from(process.env.GOOGLE_PRIVATE_KEY_BASE64, 'base64').toString('utf-8');
     } catch (e) {
-      console.error('Failed to decode GOOGLE_PRIVATE_KEY_BASE64:', e);
+      logger.error('Failed to decode GOOGLE_PRIVATE_KEY_BASE64', {}, e instanceof Error ? e : undefined);
     }
   }
   // 기존 방식 (\\n을 실제 줄바꿈으로 변환)
@@ -134,10 +121,10 @@ export async function initializeSheet() {
           values: [SHEET_HEADERS],
         },
       });
-      console.log('Sheet headers initialized');
+      logger.info('Sheet headers initialized');
     }
   } catch (error) {
-    console.error('Failed to initialize sheet:', error);
+    logger.error('Failed to initialize sheet', {}, error instanceof Error ? error : undefined);
     throw error;
   }
 }
@@ -190,16 +177,16 @@ export async function updateSheetHeaders() {
         values: [SHEET_HEADERS],
       },
     });
-    console.log('Sheet headers updated');
+    logger.info('Sheet headers updated');
     return { success: true, headers: SHEET_HEADERS };
   } catch (error) {
-    console.error('Failed to update sheet headers:', error);
+    logger.error('Failed to update sheet headers', {}, error instanceof Error ? error : undefined);
     throw error;
   }
 }
 
 // 서비스 신청 시트 헤더
-const SERVICE_REQUEST_HEADERS = [
+export const SERVICE_REQUEST_HEADERS = [
   'id',              // 세션 ID (assessment와 연결)
   'requestedAt',     // 신청 일시
   'nickname',        // 닉네임
@@ -212,6 +199,21 @@ const SERVICE_REQUEST_HEADERS = [
   'status',          // 처리 상태 (pending, contacted, completed)
   'note',            // 메모
 ];
+
+// 서비스 신청 헤더 설명
+export const SERVICE_REQUEST_HEADER_DESCRIPTIONS: Record<string, string> = {
+  id: '세션 ID (진단데이터 시트와 연결)',
+  requestedAt: '서비스 신청 일시 (ISO 8601)',
+  nickname: '사용자 닉네임',
+  email: '이메일 주소',
+  company: '회사명',
+  department: '부서',
+  jobRole: '직무',
+  leadershipType: '리더십 유형 코드 (L01-L08)',
+  services: '신청한 서비스 목록 (쉼표 구분)',
+  status: '처리 상태: pending(대기), contacted(연락완료), completed(완료)',
+  note: '관리자 메모',
+};
 
 // 서비스 신청 저장
 export async function saveServiceRequest(data: {
@@ -301,10 +303,10 @@ export async function saveServiceRequest(data: {
       },
     });
 
-    console.log('Service request saved');
+    logger.info('Service request saved');
     return { success: true };
   } catch (error) {
-    console.error('Failed to save service request:', error);
+    logger.error('Failed to save service request', {}, error instanceof Error ? error : undefined);
     throw error;
   }
 }
@@ -344,10 +346,10 @@ export async function addHeaderNotes() {
       },
     });
 
-    console.log('Header notes added');
+    logger.info('Header notes added');
     return { success: true, count: SHEET_HEADERS.length };
   } catch (error) {
-    console.error('Failed to add header notes:', error);
+    logger.error('Failed to add header notes', {}, error instanceof Error ? error : undefined);
     throw error;
   }
 }
@@ -377,7 +379,7 @@ export async function appendRow(data: Record<string, unknown>) {
 
     return response.data;
   } catch (error) {
-    console.error('Failed to append row:', error);
+    logger.error('Failed to append row', {}, error instanceof Error ? error : undefined);
     throw error;
   }
 }
@@ -408,7 +410,7 @@ export async function findRowById(id: string): Promise<{ rowNumber: number; data
     }
     return null;
   } catch (error) {
-    console.error('Failed to find row:', error);
+    logger.error('Failed to find row', {}, error instanceof Error ? error : undefined);
     throw error;
   }
 }
@@ -437,7 +439,7 @@ export async function updateRow(rowNumber: number, data: Record<string, unknown>
 
     return response.data;
   } catch (error) {
-    console.error('Failed to update row:', error);
+    logger.error('Failed to update row', {}, error instanceof Error ? error : undefined);
     throw error;
   }
 }

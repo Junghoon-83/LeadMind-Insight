@@ -1,20 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { upsertAssessment, initializeSheet, updateSheetHeaders, addHeaderNotes, SHEET_HEADERS } from '@/lib/googleSheets';
-
-// 한국 시간 포맷 (YYYY-MM-DD HH:mm:ss)
-function getKoreanTime(): string {
-  const now = new Date();
-  const options: Intl.DateTimeFormatOptions = { timeZone: 'Asia/Seoul' };
-
-  const year = now.toLocaleString('en-CA', { ...options, year: 'numeric' });
-  const month = now.toLocaleString('en-CA', { ...options, month: '2-digit' });
-  const day = now.toLocaleString('en-CA', { ...options, day: '2-digit' });
-  const hour = now.toLocaleString('en-GB', { ...options, hour: '2-digit', hour12: false });
-  const minute = now.toLocaleString('en-GB', { ...options, minute: '2-digit' });
-  const second = now.toLocaleString('en-GB', { ...options, second: '2-digit' });
-
-  return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
-}
+import { logger } from '@/lib/logger';
+import { getKoreanTime } from '@/lib/saveAssessment';
 
 // 시트 초기화 (서버 시작 시 한 번만)
 let isInitialized = false;
@@ -53,7 +40,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true, id: body.id });
   } catch (error) {
-    console.error('Assessment save error:', error);
+    logger.error('Assessment save error', {}, error instanceof Error ? error : undefined);
     return NextResponse.json(
       { error: 'Failed to save assessment' },
       { status: 500 }
@@ -70,7 +57,7 @@ export async function PUT(request: NextRequest) {
     const action = searchParams.get('action') || 'headers';
 
     if (!process.env.ADMIN_SHEET_KEY) {
-      console.error('ADMIN_SHEET_KEY environment variable is not set');
+      logger.error('ADMIN_SHEET_KEY environment variable is not set');
       return NextResponse.json(
         { error: 'Server configuration error' },
         { status: 500 }
@@ -104,7 +91,7 @@ export async function PUT(request: NextRequest) {
       count: SHEET_HEADERS.length,
     });
   } catch (error) {
-    console.error('Header update error:', error);
+    logger.error('Header update error', {}, error instanceof Error ? error : undefined);
     return NextResponse.json(
       { error: 'Failed to update headers' },
       { status: 500 }

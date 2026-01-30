@@ -1,38 +1,25 @@
 import { NextResponse } from 'next/server';
 import { google } from 'googleapis';
+import { logger } from '@/lib/logger';
+import { SERVICE_REQUEST_HEADERS, SERVICE_REQUEST_HEADER_DESCRIPTIONS } from '@/lib/googleSheets';
 
 const SPREADSHEET_ID = process.env.GOOGLE_SHEETS_SPREADSHEET_ID;
 const SERVICE_REQUEST_SHEET = '서비스신청';
 const SERVICE_ACCOUNT_EMAIL = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-const PRIVATE_KEY = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n');
 
-const SERVICE_REQUEST_HEADERS = [
-  'id',              // 세션 ID (assessment와 연결)
-  'requestedAt',     // 신청 일시
-  'nickname',        // 닉네임
-  'email',           // 이메일
-  'company',         // 회사
-  'department',      // 부서
-  'jobRole',         // 직무
-  'leadershipType',  // 리더십 유형
-  'services',        // 신청 서비스 (쉼표 구분)
-  'status',          // 처리 상태 (pending, contacted, completed)
-  'note',            // 메모
-];
+// Private Key: Base64 인코딩 방식 우선, 없으면 기존 방식 사용
+function getPrivateKey(): string | undefined {
+  if (process.env.GOOGLE_PRIVATE_KEY_BASE64) {
+    try {
+      return Buffer.from(process.env.GOOGLE_PRIVATE_KEY_BASE64, 'base64').toString('utf-8');
+    } catch {
+      // Base64 디코딩 실패 시 기존 방식 사용
+    }
+  }
+  return process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n');
+}
 
-const HEADER_DESCRIPTIONS: Record<string, string> = {
-  id: '세션 ID (진단데이터 시트와 연결)',
-  requestedAt: '서비스 신청 일시 (ISO 8601)',
-  nickname: '사용자 닉네임',
-  email: '이메일 주소',
-  company: '회사명',
-  department: '부서',
-  jobRole: '직무',
-  leadershipType: '리더십 유형 코드 (L01-L08)',
-  services: '신청한 서비스 목록 (쉼표 구분)',
-  status: '처리 상태: pending(대기), contacted(연락완료), completed(완료)',
-  note: '관리자 메모',
-};
+const PRIVATE_KEY = getPrivateKey();
 
 function getAuth() {
   return new google.auth.JWT({
@@ -109,7 +96,7 @@ export async function POST() {
           {
             values: [
               {
-                note: HEADER_DESCRIPTIONS[header] || header,
+                note: SERVICE_REQUEST_HEADER_DESCRIPTIONS[header] || header,
               },
             ],
           },
@@ -131,7 +118,7 @@ export async function POST() {
       headers: SERVICE_REQUEST_HEADERS,
     });
   } catch (error) {
-    console.error('Failed to update service request headers:', error);
+    logger.error('Failed to update service request headers', {}, error instanceof Error ? error : undefined);
     return NextResponse.json(
       { error: 'Failed to update headers', details: String(error) },
       { status: 500 }

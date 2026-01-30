@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { logger } from './logger';
 
 // JWT 설정
 const JWT_SECRET = process.env.JWT_SECRET || 'leadmind-jwt-secret-change-in-production';
@@ -122,10 +123,7 @@ export function validateAuthEnv(): { valid: boolean; errors: string[] } {
   if (!process.env.ADMIN_PASSWORD_HASH) {
     // ADMIN_PASSWORD가 있으면 해시 생성을 위한 안내
     if (process.env.ADMIN_PASSWORD) {
-      console.warn(
-        '⚠️  ADMIN_PASSWORD is set but ADMIN_PASSWORD_HASH is not. ' +
-        'Run `npm run hash-password` to generate a hash.'
-      );
+      logger.warn('ADMIN_PASSWORD is set but ADMIN_PASSWORD_HASH is not. Run `npm run hash-password` to generate a hash.');
     } else {
       errors.push('ADMIN_PASSWORD_HASH environment variable is required');
     }
@@ -135,7 +133,7 @@ export function validateAuthEnv(): { valid: boolean; errors: string[] } {
     if (process.env.NODE_ENV === 'production') {
       errors.push('JWT_SECRET must be set to a secure value in production');
     } else {
-      console.warn('⚠️  Using default JWT_SECRET. Set a secure value in production.');
+      logger.warn('Using default JWT_SECRET. Set a secure value in production.');
     }
   }
 
