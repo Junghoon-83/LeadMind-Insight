@@ -1,3 +1,6 @@
+// Score Types
+export type DiagnosisScore = 1 | 2 | 3 | 4 | 5 | 6;
+
 // User Types
 export interface User {
   id: string;
@@ -15,7 +18,7 @@ export type JobRole = '마케팅' | '기획' | '경영지원' | '개발' | '디�
 export interface Assessment {
   id: string;
   user_id: string;
-  answers: Record<number, number>; // questionId -> score (1-6)
+  answers: Record<number, DiagnosisScore>; // questionId -> score (1-6)
   scores: AssessmentScores;
   result_type: string; // 리더십 유형 코드 (사용자 정의)
   selected_concerns: string[];
