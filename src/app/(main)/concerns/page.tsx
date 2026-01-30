@@ -82,7 +82,7 @@ export default function ConcernsPage() {
             고민을 알려주세요.
           </h1>
           <p className="text-[var(--color-gray-600)] mt-2">
-            요즘 가장 고민되는 것을 골라주세요. (1~3개)
+            요즘 가장 고민되는 주제 1~3개를 골라주세요.
           </p>
         </motion.div>
 
