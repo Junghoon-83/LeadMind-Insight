@@ -214,7 +214,7 @@ export default function TeamResultPage() {
                     </div>
                   ) : (
                     <p className="text-sm text-[var(--color-gray-400)]">
-                      궁합 데이터를 추가해주세요
+                      궁합 데이터를 추가해주세요.
                     </p>
                   )}
                 </Card>
