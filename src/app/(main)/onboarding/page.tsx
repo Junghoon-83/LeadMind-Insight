@@ -279,6 +279,7 @@ export default function OnboardingPage() {
                   value={nicknameInput}
                   onChange={(e) => setNicknameInput(e.target.value)}
                   onKeyDown={(e) => {
+                    if (e.nativeEvent.isComposing) return;
                     if (e.key === 'Enter' && nicknameInput.trim()) {
                       e.preventDefault();
                       handleNicknameSubmit();

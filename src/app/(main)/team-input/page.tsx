@@ -286,6 +286,7 @@ export default function TeamInputPage() {
                 value={memberName}
                 onChange={(e) => setMemberName(e.target.value)}
                 onKeyDown={(e) => {
+                  if (e.nativeEvent.isComposing) return;
                   if (e.key === 'Enter' && memberName.trim()) {
                     e.preventDefault();
                     handleAddMember();
