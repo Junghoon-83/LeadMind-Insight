@@ -111,7 +111,7 @@ export default function ResultPage() {
   if (!typeInfo) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-[var(--color-gray-400)]">리더십 유형 데이터를 추가해주세요</p>
+        <p className="text-[var(--color-gray-400)]">리더십 유형 데이터를 추가해주세요.</p>
       </div>
     );
   }
