@@ -77,7 +77,7 @@ export default function ConcernsPage() {
             <span className="text-[var(--color-primary)]">{nickname}</span>님의
           </h1>
           <h1 className="text-2xl font-bold text-[var(--color-text)]">
-            고민을 알려주세요
+            고민을 알려주세요.
           </h1>
           <p className="text-[var(--color-gray-600)] mt-2">
             해당하는 고민을 모두 선택해주세요.
