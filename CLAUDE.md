@@ -4,85 +4,96 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 프로젝트 개요
 
-리드마인드인사이트(LeadMind Insight)는 리더십 역량 진단 웹 애플리케이션입니다. 리더의 리더십 유형을 진단하고, 팀 운영 고민을 분석하여 맞춤 솔루션을 제공합니다. 팀원의 팔로워십 유형과 리더-팔로워 궁합 분석 기능도 포함되어 있습니다.
+LeadMind Insight는 리더십 진단 및 팀 케어 솔루션 웹앱입니다. 23개 문항 진단을 통해 8가지 리더십 유형(L01-L08)을 분석하고, 팀원 팔로워십 유형(F01-F05)과의 궁합을 제공합니다.
 
 ## 명령어
 
 ```bash
-npm run dev      # 개발 서버 실행 (localhost:3000)
-npm run build    # 프로덕션 빌드
-npm run lint     # ESLint 실행
+npm run dev              # 개발 서버 (localhost:3000)
+npm run build            # 프로덕션 빌드 (prisma generate 포함)
+npm run lint             # ESLint 검사
+npm test                 # Jest 테스트 실행
+npm test -- --watch      # 테스트 감시 모드
+npm test -- path/file.test.ts  # 단일 테스트 파일
+npm run test:coverage    # 커버리지 리포트
+netlify deploy --prod    # Netlify 프로덕션 배포
+npm run hash-password    # 관리자 비밀번호 해시 생성
 ```
-
-## 기술 스택
-
-- **프레임워크**: Next.js 16 (App Router, Turbopack)
-- **스타일링**: Tailwind CSS v4
-- **애니메이션**: Framer Motion
-- **상태관리**: Zustand (localStorage 영속성)
-- **데이터베이스**: MySQL + Prisma ORM (선택사항 - 없어도 static 데이터로 동작)
-- **아이콘**: Lucide React
 
 ## 아키텍처
 
 ### 라우트 그룹
-
-Next.js 라우트 그룹으로 레이아웃 분리:
-
-- `src/app/(main)/` - 사용자용 페이지 (모바일 최적화, max-width: 430px)
+- `src/app/(main)/` - 사용자 페이지 (모바일 최적화, max-width: 430px)
 - `src/app/admin/` - 관리자 CMS (데스크톱 전체 너비)
 
 ### 사용자 플로우
+onboarding → diagnosis → concerns → profile → result → team-input → team-result → upsell
 
-1. **온보딩** (`/onboarding`) - 소개 슬라이드
-2. **진단** (`/diagnosis`) - 23개 리더십 진단 문항
-3. **고민 선택** (`/concerns`) - 15개 팀 운영 고민 (4개 카테고리: E/G/C/L)
-4. **로딩** (`/loading`) - 결과 계산
-5. **결과** (`/result`) - 리더십 유형 + 고민 분석 + 솔루션
-6. **팀원 입력** (`/team-input`) - 팀원 및 팔로워십 유형 입력
-7. **팀 결과** (`/team-result`) - 리더-팔로워 궁합 분석
+### 데이터 계층 (우선순위)
+1. **Prisma DB**: `DATABASE_URL` 설정 시 DB 우선 사용
+2. **정적 데이터**: `src/data/` 폴더에서 폴백
+3. **Google Sheets**: 진단 결과/서비스 신청 저장 (`src/lib/googleSheets.ts`)
 
-### 데이터 레이어
+### 상태 관리 (Zustand)
+- `useAssessmentStore`: 진단 상태 (닉네임, 답변, 고민, 프로필, 결과, 팀원)
+- `useAdminStore`: 관리자 인증 상태
+- persist 미들웨어로 localStorage 저장, partialize로 필요한 필드만 영속화
 
-모든 콘텐츠 데이터는 `src/data/`에 위치:
+### API 구조
+| 경로 | 메서드 | 인증 | 용도 |
+|------|--------|------|------|
+| `/api/leadership` | GET | 없음 | 리더십 유형 조회 |
+| `/api/followership` | GET | 없음 | 팔로워십 유형 조회 |
+| `/api/questions` | GET | 없음 | 진단 질문 조회 |
+| `/api/assessments` | POST | 없음 | 진단 데이터 저장 |
+| `/api/admin/*` | ALL | JWT | 관리자 API (middleware.ts에서 검증) |
+
+## 핵심 패턴
+
+### 로깅
+서버 측 코드는 `console.log` 대신 `src/lib/logger.ts` 사용:
+```typescript
+import { logger } from '@/lib/logger';
+logger.info('메시지', { context: 'value' });
+logger.error('에러', {}, error);
+```
+
+### 입력 검증
+`src/lib/validations.ts`에서 Zod 스키마 사용. 리더십 코드는 `L01~L99`, 팔로워십은 `F01~F99` 형식.
+
+### 시간 처리
+한국 시간(KST) 포맷은 `src/lib/saveAssessment.ts`의 `getKoreanTime()` 함수 공유 사용.
+
+### 환경변수
+`src/lib/env.ts`에서 Zod 기반 검증. 프로덕션에서 필수 환경변수 누락 시 에러.
+
+## 데이터 파일
 
 | 파일 | 내용 |
 |------|------|
-| `questions.ts` | 23개 진단 문항 (growth/sharing/interaction 카테고리) |
-| `leadershipTypes.ts` | 8개 리더십 유형 (L01-L08) + `determineLeadershipType()` 함수 |
-| `concerns.ts` | 15개 고민 + `analyzeConcerns()` Z-score 계산 |
-| `solutions.ts` | 11개 솔루션 (P01-P11) + `getSolution()` 조회 |
-| `followershipTypes.ts` | 5개 팔로워십 유형 + 40개 궁합 조합 |
+| `data/questions.ts` | 23개 진단 문항 (growth/sharing/interaction) |
+| `data/leadershipTypes.ts` | 8개 리더십 유형 + `determineLeadershipType()` |
+| `data/concerns.ts` | 15개 고민 + `analyzeConcerns()` Z-score |
+| `data/solutions.ts` | 솔루션 + `getSolution()` 조회 |
+| `data/followershipTypes.ts` | 5개 팔로워십 유형 + 궁합 데이터 |
 
-### 상태 관리
+## 리더십 유형 결정 로직
 
-`useAssessmentStore` (Zustand)가 전체 진단 플로우 관리:
-- 사용자 정보, 응답, 점수, 리더십 유형
-- 선택한 고민, 팀원 목록
-- localStorage `leadmind-assessment` 키로 영속화
+`determineLeadershipType(scores)`: growth, sharing, interaction 점수를 4.5 기준으로 비교하여 8개 유형(L01-L08) 중 하나 반환.
 
-### 리더십 유형 결정 로직
+## 타입 시스템
 
-`leadershipTypes.ts`의 `determineLeadershipType(scores)`:
-- growth, sharing, interaction 점수를 4.5 기준으로 비교
-- 높음/낮음 조합에 따라 8개 유형(L01-L08) 중 하나 반환
+`src/types/index.ts`에서 핵심 타입 정의:
+- `DiagnosisScore`: 1-6 점수
+- `LeadershipTypeInfo`, `FollowershipTypeInfo`: 유형 정보
+- `Assessment`, `AssessmentScores`: 진단 결과
 
-### 고민 분석 (Z-Score)
+## 테스트
 
-`concerns.ts`의 `analyzeConcerns(selectedConcernIds)`:
-- 카테고리별(E/G/C/L) 선택 비율 계산
-- 상위 2개 카테고리를 `primaryA`, `primaryB`로 반환
-- 솔루션 조합에 매핑 (예: "L+E" → P01)
+테스트 파일은 `__tests__/` 폴더 또는 `.test.ts` 확장자. 주요 테스트: `lib/auth.ts`, `lib/validations.ts`, `lib/logger.ts`, `store/` 스토어들.
 
-### Admin CMS
+## 참고 문서
 
-`/admin` 경로에서 모든 콘텐츠 CRUD 제공:
-- Database 미설정 시 static 데이터로 읽기 전용 동작
-- 수정 기능은 MySQL 설정 필요
-- 스키마: `prisma/schema.prisma`
-
-## 디자인 패턴
-
-- **모바일 퍼스트**: 사용자 페이지는 `app-container` 클래스 (430px 최대 너비)
-- **한국어 UI**: 모든 사용자 인터페이스는 한국어
-- **그라데이션 테마**: 보라색 계열 그라데이션 (`globals.css`에 정의)
+- API 문서: `docs/API.md`
+- 테스트 가이드: `TESTING.md`
+- 코드 리뷰: `CODE_REVIEW.md`
