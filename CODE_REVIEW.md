@@ -80,10 +80,9 @@ answers: Record<QuestionId, Score>;
 - fetch 유틸리티 재사용 (`/src/lib/fetch.ts`)
 - 공통 검증 로직 중앙화 (`/src/lib/validations.ts`)
 
-**개선 가능:**
-- 한국 시간 포맷팅 로직이 두 곳에서 중복됨
-  - `/src/app/api/assessments/route.ts`
-  - `/src/lib/saveAssessment.ts`
+**개선 가능:** ✅ 완료됨
+- ~~한국 시간 포맷팅 로직이 두 곳에서 중복됨~~ → `saveAssessment.ts`에서 공유
+- ~~SERVICE_REQUEST_HEADERS 중복~~ → `googleSheets.ts`에서 export
 
 ---
 
@@ -237,11 +236,11 @@ isValid = password === 'leadmind2024!';
 #### ⚠️ 개선 필요
 - [ ] CSRF 토큰
 - [ ] API Rate Limiting (Redis 기반으로 전환)
-- [ ] 환경변수 검증 자동화
+- [x] 환경변수 검증 자동화 ✅ (src/lib/env.ts 추가)
 
-#### 🔴 즉시 조치 필요
-- [ ] 하드코딩된 인증 키 제거
-- [ ] 개발용 기본 비밀번호 제거 (프로덕션)
+#### 🔴 즉시 조치 필요 (모두 완료됨)
+- [x] 하드코딩된 인증 키 제거 ✅
+- [x] 개발용 기본 비밀번호 제거 ✅
 
 ---
 
@@ -316,17 +315,16 @@ export const env = envSchema.parse(process.env);
 
 #### 🟡 Warning (권장)
 
-3. **console.log 제거 및 logger 사용**
-모든 console.log를 logger 유틸리티로 대체
+3. **console.log 제거 및 logger 사용** ✅ 완료됨
+~~모든 console.log를 logger 유틸리티로 대체~~ → 서버측 코드 완료
 
-4. **타입 안전성 강화**
+4. **타입 안전성 강화** ✅ 완료됨
 ```typescript
-export type LeadershipType = 'L01' | 'L02' | ... ;
-export type Score = 1 | 2 | 3 | 4 | 5 | 6;
+export type DiagnosisScore = 1 | 2 | 3 | 4 | 5 | 6; // src/types/index.ts
 ```
 
-5. **한국 시간 포맷 함수 통일**
-`lib/datetime.ts` 생성하여 중복 코드 제거
+5. **한국 시간 포맷 함수 통일** ✅ 완료됨
+~~`lib/datetime.ts` 생성하여 중복 코드 제거~~ → `saveAssessment.ts`에서 공유
 
 ### 6.2 중장기 개선 사항
 
