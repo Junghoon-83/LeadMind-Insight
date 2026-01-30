@@ -146,7 +146,7 @@ export default function ProfilePage() {
     const value = e.target.value;
     setFormData({ ...formData, email: value });
     if (value && !validateEmail(value)) {
-      setEmailError('올바른 이메일 형식을 입력해주세요');
+      setEmailError('올바른 이메일 형식을 입력해주세요.');
     } else {
       setEmailError('');
     }
@@ -225,14 +225,14 @@ export default function ProfilePage() {
         >
           <Input
             label="회사명"
-            placeholder="회사명을 입력해주세요"
+            placeholder="회사명을 입력해주세요."
             value={formData.company}
             onChange={(e) => setFormData({ ...formData, company: e.target.value })}
           />
 
           <Input
             label="부서"
-            placeholder="부서명을 입력해주세요"
+            placeholder="부서명을 입력해주세요."
             value={formData.department}
             onChange={(e) => setFormData({ ...formData, department: e.target.value })}
           />
@@ -240,7 +240,7 @@ export default function ProfilePage() {
           {/* Job Role Dropdown */}
           <Dropdown
             label="직무"
-            placeholder="직무를 선택해주세요"
+            placeholder="직무를 선택해주세요."
             value={formData.jobRole}
             options={jobRoles}
             onChange={(value) => setFormData({ ...formData, jobRole: value as JobRole })}
@@ -249,7 +249,7 @@ export default function ProfilePage() {
           <Input
             label="이메일"
             type="email"
-            placeholder="이메일을 입력해주세요"
+            placeholder="이메일을 입력해주세요."
             value={formData.email}
             onChange={handleEmailChange}
             error={emailError}
