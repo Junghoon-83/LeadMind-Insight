@@ -278,6 +278,11 @@ export default function OnboardingPage() {
                   placeholder="닉네임이나 영어 이름도 괜찮아요."
                   value={nicknameInput}
                   onChange={(e) => setNicknameInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && nicknameInput.trim()) {
+                      handleNicknameSubmit();
+                    }
+                  }}
                   maxLength={10}
                   autoFocus
                 />

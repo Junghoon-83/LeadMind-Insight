@@ -274,6 +274,11 @@ export default function TeamInputPage() {
                 placeholder="팀원 이름"
                 value={memberName}
                 onChange={(e) => setMemberName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && memberName.trim()) {
+                    handleAddMember();
+                  }
+                }}
                 autoFocus
               />
               <div className="flex gap-3 mt-4">
