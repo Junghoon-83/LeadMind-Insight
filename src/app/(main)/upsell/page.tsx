@@ -174,9 +174,9 @@ export default function UpsellPage() {
                   >
                     {/* Header */}
                     <div className="p-4">
-                      <div className="flex items-start gap-4">
+                      <div className="flex items-center gap-3">
                         <div
-                          className={`w-6 h-6 rounded-md border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors ${
+                          className={`w-6 h-6 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
                             isSelected
                               ? 'bg-[var(--color-action)] border-[var(--color-action)]'
                               : 'border-[var(--color-violet-200)]'
@@ -186,11 +186,9 @@ export default function UpsellPage() {
                             <Check className="w-4 h-4 text-white" />
                           )}
                         </div>
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-[var(--color-text)]">
-                            {service.label}
-                          </h3>
-                        </div>
+                        <h3 className="font-semibold text-[var(--color-text)]">
+                          {service.label}
+                        </h3>
                       </div>
                     </div>
 
