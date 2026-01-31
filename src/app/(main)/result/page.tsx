@@ -272,7 +272,7 @@ export default function ResultPage() {
             </div>
             <Card padding="lg">
               {/* Primary Categories */}
-              <div className="flex flex-wrap gap-2 mb-4">
+              <div className="flex flex-wrap justify-center gap-2 mb-4">
                 {concernAnalysis.combinationId === 'P07' ? (
                   // P07: 모든 영역에서 고민 - 4개 카테고리 모두 표시
                   (['L', 'E', 'G', 'C'] as const).map((cat) => (
