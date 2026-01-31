@@ -190,9 +190,6 @@ export default function UpsellPage() {
                           <h3 className="font-semibold text-[var(--color-text)]">
                             {service.label}
                           </h3>
-                          <p className="text-sm text-[var(--color-gray-600)] mt-1">
-                            {service.description}
-                          </p>
                         </div>
                       </div>
                     </div>
