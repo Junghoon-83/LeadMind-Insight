@@ -4,56 +4,16 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { Check, MessageCircle, Send, Loader2, FileText } from 'lucide-react';
+import { Check, MessageCircle, Send, Loader2, FileText, Info } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import { Button, Card } from '@/components/ui';
 import { useAssessmentStore } from '@/store/useAssessmentStore';
 import { saveAssessment, getOrCreateSessionId } from '@/lib/saveAssessment';
 import type { ServiceType } from '@/types';
 
-interface ServiceOption {
-  id: ServiceType;
-  label: string;
-  description: string;
-  extendedDescription: string;
-  image: string;
-}
-
-const serviceOptions: ServiceOption[] = [
-  {
-    id: 'team_diagnosis_link',
-    label: '팀 진단 Link',
-    description: '팀과 함께 더 정확한 진단 결과를 받아보세요.',
-    extendedDescription: '내가 예상한 팀의 팔로워십 유형이 맞을까? 팀원이 직접 참여한 결과를 확인하고, 전문가와 1:1 상담을 통해 팀 운영 전략을 세워보세요.',
-    image: '/images/Service_1.png',
-  },
-  {
-    id: 'expert_consultation',
-    label: '전문가 1:1 상담',
-    description: '리더십 전문가와 1:1 상담을 통해 깊이 있는 코칭을 받으세요',
-    extendedDescription: '팀 운영 방향성부터 저성과자 관리, 1:1 면담 기술까지. 검증된 리더십 전문가와 현재 직면한 리더십 과제에 대해 구체적인 해결책과 실행 전략을 함께 수립해보세요.',
-    image: '/images/Service_2.png',
-  },
-  {
-    id: 'team_workshop',
-    label: '팀 마인드 케어 워크숍',
-    description: '효과적인 소통방식을 통해 팀 시너지를 경험해 보세요.',
-    extendedDescription: '팀의 진단 결과를 기반으로 설계된 맞춤형 워크숍입니다. 팀원 간 이해도를 높이고, 효과적인 소통방식을 체험하며, 팀 시너지를 극대화하는 활동을 진행합니다.',
-    image: '/images/Service_3.png',
-  },
-  {
-    id: 'team_solution',
-    label: '팀 이슈 케어 솔루션',
-    description: '팀 내 갈등과 이슈를 해결하기 위한 전문 솔루션을 제공합니다',
-    extendedDescription: '팀 내 갈등, 소통 단절, 성과 저하 등 다양한 이슈에 대한 전문적인 진단과 해결책을 제공합니다. 조직 심리 전문가와 함께 팀 상황을 분석하고 우리 팀에 맞는 개선 방안을 찾아보세요.',
-    image: '/images/Service_4.png',
-  },
-];
-
 export default function UpsellPage() {
   const router = useRouter();
   const { nickname, email, company, department, jobRole, leadershipType } = useAssessmentStore();
-  const [selectedServices, setSelectedServices] = useState<ServiceType[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -63,26 +23,19 @@ export default function UpsellPage() {
     }
   }, [nickname, router]);
 
-  const toggleService = (id: ServiceType) => {
-    setSelectedServices((prev) =>
-      prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]
-    );
-  };
-
   const handleApply = async () => {
-    // 중복 제출 방지
     if (isSubmitting || isSubmitted) return;
 
     setIsSubmitting(true);
 
     try {
-      // 서비스 선택 저장 (기존 assessment)
+      const selectedServices: ServiceType[] = ['expert_consultation'];
+
       await saveAssessment({
         status: 'completed',
         selectedServices,
       });
 
-      // 서비스 신청 별도 저장 (서비스신청 시트)
       const sessionId = getOrCreateSessionId();
       await fetch('/api/service-request', {
         method: 'POST',
@@ -113,7 +66,6 @@ export default function UpsellPage() {
   };
 
   const handleInquiry = () => {
-    // TODO: 문의하기 기능 구현 (이메일 또는 채널톡 등)
     window.location.href = 'mailto:contact@leadmindinsight.com';
   };
 
@@ -143,86 +95,67 @@ export default function UpsellPage() {
           </p>
         </motion.div>
 
-        {/* Service Options */}
+        {/* Main Service - 전문가 1:1 상담 */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="space-y-3"
         >
-          {serviceOptions.map((service, index) => {
-            const isSelected = selectedServices.includes(service.id);
+          <Card padding="none" className="overflow-hidden border-2 border-[var(--color-action)] bg-[var(--color-violet-50)]">
+            {/* Header */}
+            <div className="p-4">
+              <h3 className="font-semibold text-[var(--color-text)] text-lg">
+                전문가 1:1 상담
+              </h3>
+            </div>
 
-            return (
-              <motion.div
-                key={service.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <button
-                  onClick={() => toggleService(service.id)}
-                  className="w-full text-left"
-                >
-                  <Card
-                    padding="none"
-                    className={`overflow-hidden transition-all ${
-                      isSelected
-                        ? 'border-2 border-[var(--color-action)] bg-[var(--color-violet-50)]'
-                        : 'border-2 border-transparent hover:border-[var(--color-violet-200)]'
-                    }`}
-                  >
-                    {/* Header */}
-                    <div className="p-4">
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={`w-6 h-6 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
-                            isSelected
-                              ? 'bg-[var(--color-action)] border-[var(--color-action)]'
-                              : 'border-[var(--color-violet-200)]'
-                          }`}
-                        >
-                          {isSelected && (
-                            <Check className="w-4 h-4 text-white" />
-                          )}
-                        </div>
-                        <h3 className="font-semibold text-[var(--color-text)]">
-                          {service.label}
-                        </h3>
-                      </div>
-                    </div>
-
-                    {/* Always Expanded Content */}
-                    <div className="px-4 pb-4 pt-0">
-                      <div className="p-4 bg-white rounded-xl border border-[var(--color-violet-100)]">
-                        {/* Service Image */}
-                        <div className="relative w-full h-40 mb-4 rounded-lg overflow-hidden">
-                          <Image
-                            src={service.image}
-                            alt={service.label}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                        {/* Extended Description */}
-                        <p className="text-sm text-[var(--color-gray-700)] leading-relaxed">
-                          {service.extendedDescription}
-                        </p>
-                      </div>
-                    </div>
-                  </Card>
-                </button>
-              </motion.div>
-            );
-          })}
+            {/* Content */}
+            <div className="px-4 pb-4 pt-0">
+              <div className="p-4 bg-white rounded-xl border border-[var(--color-violet-100)]">
+                {/* Service Image */}
+                <div className="relative w-full h-40 mb-4 rounded-lg overflow-hidden">
+                  <Image
+                    src="/images/Service_2.png"
+                    alt="전문가 1:1 상담"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                {/* Description */}
+                <p className="text-sm text-[var(--color-gray-700)] leading-relaxed">
+                  팀 운영 방향성부터 저성과자 관리, 1:1 면담 기술까지. 검증된 리더십 전문가와 현재 직면한 리더십 과제에 대해 구체적인 해결책과 실행 전략을 함께 수립해보세요.
+                </p>
+              </div>
+            </div>
+          </Card>
         </motion.div>
 
-        {/* Info */}
+        {/* Other Services Info */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="mt-6 p-4 bg-[var(--color-violet-100)] rounded-xl"
+          transition={{ delay: 0.3 }}
+          className="mt-4 p-4 bg-[var(--color-violet-100)] rounded-xl"
+        >
+          <div className="flex items-start gap-3">
+            <Info className="w-5 h-5 text-[var(--color-primary)] flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-medium text-[var(--color-text)] mb-1">
+                다양한 케어 서비스 이용 가능
+              </p>
+              <p className="text-sm text-[var(--color-gray-600)] leading-relaxed">
+                상담 신청 시 팀 진단 Link, 팀 마인드 케어 워크숍, 팀 이슈 케어 솔루션 등 필요에 따라 다른 서비스도 함께 안내받으실 수 있습니다.
+              </p>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Email Info */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="mt-4 p-4 bg-[var(--color-violet-100)] rounded-xl"
         >
           <p className="text-sm text-[var(--color-gray-600)]">
             서비스 신청 시 등록하신 이메일({email || 'email@example.com'})로 상세
@@ -249,7 +182,7 @@ export default function UpsellPage() {
           <Button
             fullWidth
             onClick={handleApply}
-            disabled={selectedServices.length === 0 || isSubmitting}
+            disabled={isSubmitting}
           >
             {isSubmitting ? (
               <>
@@ -259,7 +192,7 @@ export default function UpsellPage() {
             ) : (
               <>
                 <Send className="w-5 h-5 mr-2" />
-                서비스 신청하기
+                상담 신청하기
               </>
             )}
           </Button>
