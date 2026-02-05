@@ -32,7 +32,7 @@ export default function Header({
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm">
       <div className="flex items-center justify-between h-14 px-4">
         {/* Left: Back button */}
-        <div className="flex items-center">
+        <div className="min-w-[90px] flex items-center">
           {showBack ? (
             <button
               onClick={handleBack}
@@ -68,7 +68,7 @@ export default function Header({
         </div>
 
         {/* Right: Custom element */}
-        <div className="w-12 flex justify-end">
+        <div className="min-w-[90px] flex justify-end">
           {rightElement}
         </div>
       </div>
